@@ -14,11 +14,18 @@ class TextureRegion
 	std::string filename;
 	sf::Vector2i xy;
 	sf::Vector2i size;
+
+	std::shared_ptr<sf::Texture> atlasTexture;
+	sf::Sprite regionSprite;
+private:
+	void initSprite();
 public:
 	std::string getAtlasFileName() { return textureAtlasFileName; }
-	std::string getFileName() { return filename; }
+	std::string getRegionName() { return filename; }
 	sf::Vector2i getXY() { return xy; }
 	sf::Vector2i getSize() { return size; }
+
+	void setRegion(int x, int y, int widht, int height);
 };
 
 class TextureAtlas
