@@ -111,6 +111,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnimatedSprite.cpp" />
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="TextureAtlas.cpp" />
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="TextureRegion.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AnimatedSprite.h" />
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="TextureAtlas.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="TextureRegion.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="player.atlas" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
