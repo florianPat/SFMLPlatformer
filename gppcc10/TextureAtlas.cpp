@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "SFML\System\FileInputStream.hpp"
 
-TextureAtlas::TextureAtlas(std::string filepath) : textureAtlas(std::make_unique<std::unordered_map<std::string, TextureRegion>>()),
+TextureAtlas::TextureAtlas(const std::string& filepath) : textureAtlas(std::make_unique<std::unordered_map<std::string, TextureRegion>>()),
 													fileHeader(std::make_unique<FileHeader>())
 {
 	std::ifstream file;
@@ -118,7 +118,7 @@ TextureAtlas::TextureAtlas(std::string filepath) : textureAtlas(std::make_unique
 	file.close();
 }
 
-std::unique_ptr<TextureRegion> TextureAtlas::findRegion(std::string name)
+std::unique_ptr<TextureRegion> TextureAtlas::findRegion(const std::string& name)
 {
 	auto result = textureAtlas->find(name);
 	if (result != textureAtlas->end())

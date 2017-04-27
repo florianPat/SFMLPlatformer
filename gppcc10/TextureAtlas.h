@@ -32,9 +32,9 @@ class TextureAtlas
 		std::string repeat;
 	};
 public:
-	TextureAtlas(std::string filepath);
+	TextureAtlas(const std::string& filepath);
 
-	std::unique_ptr<TextureRegion> findRegion(std::string name);
+	std::unique_ptr<TextureRegion> findRegion(const std::string& name);
 	std::vector<TextureRegion> getRegions();
 	void addRegion(const TextureRegion& adder);
 private:
