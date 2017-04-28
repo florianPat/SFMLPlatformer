@@ -1,9 +1,17 @@
 #include "Animation.h"
 #include <assert.h>
 
-Animation::Animation(std::vector<sf::Sprite>& keyFrames, sf::Int64 frameDuration, PlayMode type) : keyFrames(keyFrames),
-	frameDuration(frameDuration), playMode(type), clock(), keyFrameIt(keyFrames.begin()), keyFrameItReverse(keyFrames.rbegin()), currentKeyFrame(*keyFrameIt)
+Animation::Animation(std::vector<TextureRegion>& keyFrames, sf::Int64 frameDuration, PlayMode type) : keyFrames(),
+	frameDuration(frameDuration), playMode(type), clock(), keyFrameIt(), keyFrameItReverse(), currentKeyFrame()
 {
+	for (auto it = keyFrames.begin(); it != keyFrames.end(); ++it)
+	{
+		this->keyFrames.push_back(it->getRegion());
+	}
+
+	keyFrameIt = this->keyFrames.begin();
+	keyFrameItReverse = this->keyFrames.rbegin();
+	currentKeyFrame = *keyFrameIt;
 }
 
 Animation::PlayMode Animation::getPlayMode()
@@ -24,9 +32,13 @@ void Animation::setFrameDuration(sf::Int64 newFrameDuration)
 	}
 }
 
-void Animation::setKeyFrames(std::vector<sf::Sprite>& newKeyFrames)
+void Animation::setKeyFrames(std::vector<TextureRegion>& newKeyFrames)
 {
-	keyFrames = newKeyFrames;
+	keyFrames.clear();
+	for (auto it = newKeyFrames.begin(); it != newKeyFrames.end(); ++it)
+	{
+		keyFrames.push_back(it->getRegion());
+	}
 }
 
 bool Animation::isAnimationFinished()

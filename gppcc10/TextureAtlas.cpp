@@ -202,6 +202,17 @@ void TextureRegion::initSprite()
 void TextureRegion::setRegion(int x, int y, int widht, int height)
 {
 	if(x >= 0 && y >= 0)
-		if((unsigned int) widht <= regionSprite.getTexture()->getSize().x && (unsigned int) height <= regionSprite.getTexture()->getSize().y)
+		if ((unsigned int)widht <= regionSprite.getTexture()->getSize().x && (unsigned int)height <= regionSprite.getTexture()->getSize().y)
+		{
 			regionSprite.setTextureRect(sf::IntRect(x, y, widht, height));
+			xy.x = x;
+			xy.y = y;
+			size.x = widht;
+			size.y = height;
+		}
+}
+
+sf::Sprite TextureRegion::getRegion()
+{
+	return regionSprite;
 }

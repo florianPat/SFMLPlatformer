@@ -23,11 +23,11 @@ private:
 	PlayMode playMode;
 	sf::Clock clock;
 public:
-	Animation(std::vector<sf::Sprite>& keyFrames, sf::Int64 frameDuration, PlayMode type);
+	Animation(std::vector<TextureRegion>& keyFrames, sf::Int64 frameDuration, PlayMode type);
 	PlayMode getPlayMode();
 	sf::Int64 getFrameDuration();
 	void setFrameDuration(sf::Int64 frameDuration);
-	void setKeyFrames(std::vector<sf::Sprite>& keyFrames);
+	void setKeyFrames(std::vector<TextureRegion>& keyFrames);
 	bool isAnimationFinished();
 	sf::Sprite getKeyFrame();
 	void setPlayMode(PlayMode& playMode);

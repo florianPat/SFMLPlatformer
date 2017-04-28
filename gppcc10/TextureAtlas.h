@@ -26,6 +26,7 @@ public:
 	sf::Vector2i getSize() { return size; }
 
 	void setRegion(int x, int y, int widht, int height);
+	sf::Sprite getRegion();
 };
 
 class TextureAtlas
