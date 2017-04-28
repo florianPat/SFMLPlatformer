@@ -111,18 +111,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="TextureAtlas.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="TextureRegion.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="AssetManager.h" />
     <ClInclude Include="Assets.h" />
     <ClInclude Include="TextureAtlas.h" />
     <ClInclude Include="Collision.h" />
-    <ClInclude Include="TextureRegion.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="player.atlas" />

@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "TextureAtlas.h"
+#include "Animation.h"
 
 int main()
 {
@@ -11,6 +12,8 @@ int main()
 
 	TextureRegion region;
 	atlas.addRegion(region); //Will not work, because region is not filled with value!
+
+	//Animation anim(animationRegions, 16, Animation::PlayMode::LOOPED);
 
 	while (window.isOpen())
 	{
