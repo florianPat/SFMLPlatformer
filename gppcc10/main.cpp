@@ -25,6 +25,7 @@ int main()
 		}
 
 		window.clear();
+		window.draw(anim.getKeyFrame());
 		window.display();
 	}
 

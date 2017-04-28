@@ -51,9 +51,12 @@ bool Animation::isAnimationFinished()
 
 	if (playMode == Animation::PlayMode::NORMAL)
 	{
-		for (int i = 0; keyFrameIt != keyFrames.end() || i < framesToAdvance; ++keyFrameIt, ++i)
+		for (int i = 0; i < framesToAdvance; ++keyFrameIt, ++i)
 		{
-			currentKeyFrame = *keyFrameIt;
+			if (keyFrameIt != keyFrames.end())
+				currentKeyFrame = *keyFrameIt;
+			else
+				break;
 		}
 		if (keyFrameIt == keyFrames.end())
 			return true;
@@ -62,9 +65,12 @@ bool Animation::isAnimationFinished()
 	}
 	else if (playMode == Animation::PlayMode::REVERSED)
 	{
-		for (int i = 0; keyFrameItReverse != keyFrames.rend() || i < framesToAdvance; ++keyFrameIt, ++i)
+		for (int i = 0; i < framesToAdvance; ++keyFrameItReverse, ++i)
 		{
-			currentKeyFrame = *keyFrameIt;
+			if (keyFrameItReverse != keyFrames.rend())
+				currentKeyFrame = *keyFrameItReverse;
+			else
+				break;
 		}
 		if (keyFrameItReverse == keyFrames.rend())
 			return true;
@@ -81,28 +87,27 @@ sf::Sprite Animation::getKeyFrame()
 
 	if (playMode == Animation::PlayMode::NORMAL)
 	{
-		for (int i = 0; keyFrameIt != keyFrames.end() || i < framesToAdvance; ++keyFrameIt, ++i)
+		for (int i = 0; i < framesToAdvance; ++keyFrameIt, ++i)
 		{
-			currentKeyFrame = *keyFrameIt;
+			if (keyFrameIt != keyFrames.end())
+				currentKeyFrame = *keyFrameIt;
+			else
+				break;
 		}
-		if (keyFrameIt == keyFrames.end())
-		{
-			//Handle error better!
-			return sf::Sprite();
-		}
-		else
-		{
-			return currentKeyFrame;
-		}
+		
+		return currentKeyFrame;
 	}
 	else if (playMode == Animation::PlayMode::LOOPED)
 	{
 		int i = 0;
 		while (i < framesToAdvance)
 		{
-			for (; keyFrameIt != keyFrames.end() || i < framesToAdvance; ++keyFrameIt, ++i)
+			for (; i < framesToAdvance; ++keyFrameIt, ++i)
 			{
-				currentKeyFrame = *keyFrameIt;
+				if (keyFrameIt != keyFrames.end())
+					currentKeyFrame = *keyFrameIt;
+				else
+					break;
 			}
 			if (keyFrameIt == keyFrames.end())
 			{
@@ -114,28 +119,27 @@ sf::Sprite Animation::getKeyFrame()
 	}
 	else if (playMode == Animation::PlayMode::REVERSED)
 	{
-		for (int i = 0; keyFrameItReverse != keyFrames.rend() || i < framesToAdvance; ++keyFrameIt, ++i)
+		for (int i = 0; i < framesToAdvance; ++keyFrameItReverse, ++i)
 		{
-			currentKeyFrame = *keyFrameIt;
+			if (keyFrameItReverse != keyFrames.rend())
+				currentKeyFrame = *keyFrameItReverse;
+			else
+				break;
 		}
-		if (keyFrameItReverse == keyFrames.rend())
-		{
-			//TODO: Handle error better!
-			return sf::Sprite();
-		}
-		else
-		{
-			return currentKeyFrame;
-		}
+		
+		return currentKeyFrame;
 	}
 	else if (playMode == Animation::PlayMode::LOOP_REVERSED)
 	{
 		int i = 0;
 		while (i < framesToAdvance)
 		{
-			for (; keyFrameItReverse != keyFrames.rend() || i < framesToAdvance; ++keyFrameIt, ++i)
+			for (; i < framesToAdvance; ++keyFrameItReverse, ++i)
 			{
-				currentKeyFrame = *keyFrameIt;
+				if (keyFrameItReverse != keyFrames.rend())
+					currentKeyFrame = *keyFrameIt;
+				else
+					break;
 			}
 			if (keyFrameItReverse == keyFrames.rend())
 			{
