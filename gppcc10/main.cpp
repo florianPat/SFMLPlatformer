@@ -13,7 +13,8 @@ int main()
 	TextureRegion region;
 	atlas.addRegion(region); //Will not work, because region is not filled with value!
 
-	Animation anim(animationRegions, 16, Animation::PlayMode::LOOPED);
+	sf::Time time = sf::seconds((float)1/4);
+	Animation anim(animationRegions, time.asMicroseconds(), Animation::PlayMode::LOOPED);
 
 	while (window.isOpen())
 	{
