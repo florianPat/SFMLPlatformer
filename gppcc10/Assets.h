@@ -7,5 +7,3 @@ class Assets
 public:
 	static TextureAssetManager textureAssetManager;
 };
-
-TextureAssetManager Assets::textureAssetManager;

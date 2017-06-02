@@ -1,4 +1,5 @@
 #include "AssetManager.h"
+#include <iostream>
 
 std::shared_ptr<sf::Texture> TextureAssetManager::getOrAddRes(const std::string & filename)
 {
@@ -8,7 +9,11 @@ std::shared_ptr<sf::Texture> TextureAssetManager::getOrAddRes(const std::string 
 	else
 	{
 		std::shared_ptr<sf::Texture> texture = std::make_shared<sf::Texture>();
-		texture->loadFromFile(filename);
+		if(!texture->loadFromFile(filename))
+		{
+			std::cerr << "Could not load texture!";
+			return nullptr;
+		}
 		ressourceCache.insert({ filename, texture});
 		return texture;
 	}
