@@ -12,9 +12,7 @@ int main()
 	window.setView(view);*/
 	
 	TextureAtlas atlas("player.atlas");
-	std::vector<TextureRegion> animationRegions = atlas.getRegions();
-	sf::Time time = sf::seconds((float)1/4);
-	Animation anim(animationRegions, time.asMicroseconds(), Animation::PlayMode::LOOPED);
+	Animation anim(atlas.getRegions(), sf::seconds(0.2f).asMicroseconds(), Animation::PlayMode::LOOPED);
 
 	TiledMap map("testLevel.tmx");
 
@@ -29,7 +27,7 @@ int main()
 
 		window.clear();
 		map.draw(window);
-		//window.draw(anim.getKeyFrame());
+		window.draw(anim.getKeyFrame());
 		window.display();
 	}
 

@@ -2,7 +2,7 @@
 #include <assert.h>
 
 Animation::Animation(std::vector<TextureRegion>& keyFrames, sf::Int64 frameDuration, PlayMode type) : keyFrames(),
-	frameDuration(frameDuration), playMode(type), clock(), keyFrameIt(), keyFrameItReverse(), currentKeyFrame()
+	frameDuration(frameDuration), playMode(type), clock(), keyFrameIt(), keyFrameItReverse()
 {
 	for (auto it = keyFrames.begin(); it != keyFrames.end(); ++it)
 	{
@@ -11,7 +11,6 @@ Animation::Animation(std::vector<TextureRegion>& keyFrames, sf::Int64 frameDurat
 
 	keyFrameIt = this->keyFrames.begin();
 	keyFrameItReverse = this->keyFrames.rbegin();
-	currentKeyFrame = *keyFrameIt;
 }
 
 Animation::PlayMode Animation::getPlayMode()
@@ -43,119 +42,129 @@ void Animation::setKeyFrames(std::vector<TextureRegion>& newKeyFrames)
 
 bool Animation::isAnimationFinished()
 {
-	assert(playMode == Animation::PlayMode::NORMAL || playMode == Animation::PlayMode::REVERSED);
-
-	sf::Time time = clock.restart();
-	sf::Int64 currentTime = time.asMicroseconds();
-	sf::Int64 framesToAdvance = currentTime / frameDuration;
-
-	if (playMode == Animation::PlayMode::NORMAL)
+	if (!paused)
 	{
-		for (int i = 0; i < framesToAdvance; ++keyFrameIt, ++i)
+		assert(playMode == Animation::PlayMode::NORMAL || playMode == Animation::PlayMode::REVERSED);
+
+		sf::Int64 currentTime = clock.restart().asMicroseconds();
+
+		if (playMode == Animation::PlayMode::NORMAL)
 		{
-			if (keyFrameIt != keyFrames.end())
-				currentKeyFrame = *keyFrameIt;
-			else
-				break;
-		}
-		if (keyFrameIt == keyFrames.end())
-			return true;
-		else
+			while (currentTime >= frameDuration)
+			{
+				currentTime -= frameDuration;
+				if (++keyFrameIt == keyFrames.end())
+				{
+					--keyFrameIt;
+					return true;
+				}
+			}
+
 			return false;
+		}
+		else if (playMode == Animation::PlayMode::REVERSED)
+		{
+			while (currentTime >= frameDuration)
+			{
+				currentTime -= frameDuration;
+				if (++keyFrameItReverse == keyFrames.rend())
+				{
+					--keyFrameItReverse;
+					return true;
+				}
+			}
+
+			return false;
+		}
 	}
-	else if (playMode == Animation::PlayMode::REVERSED)
+	else
 	{
-		for (int i = 0; i < framesToAdvance; ++keyFrameItReverse, ++i)
+		if (playMode == Animation::PlayMode::NORMAL)
 		{
-			if (keyFrameItReverse != keyFrames.rend())
-				currentKeyFrame = *keyFrameItReverse;
+			if (++keyFrameIt == keyFrames.end())
+			{
+				--keyFrameIt;
+				return true;
+			}
 			else
-				break;
+				return false;
 		}
-		if (keyFrameItReverse == keyFrames.rend())
-			return true;
-		else
-			return false;
+		else if (playMode == Animation::PlayMode::REVERSED)
+		{
+			if (++keyFrameItReverse == keyFrames.rend())
+			{
+				--keyFrameItReverse;
+				return true;
+			}
+			else
+				return false;
+		}
 	}
 }
 
 sf::Sprite Animation::getKeyFrame()
 {
-	sf::Time time = clock.restart();
-	sf::Int64 currentTime = time.asMicroseconds();
-	sf::Int64 framesToAdvance = currentTime / frameDuration;
+	if (!paused)
+	{
+		currentTime += clock.restart().asMicroseconds();
 
-	if (playMode == Animation::PlayMode::NORMAL)
-	{
-		for (int i = 0; i < framesToAdvance; ++keyFrameIt, ++i)
+		if (playMode == Animation::PlayMode::NORMAL)
 		{
-			if (keyFrameIt != keyFrames.end())
-				currentKeyFrame = *keyFrameIt;
-			else
-				break;
-		}
-		
-		return currentKeyFrame;
-	}
-	else if (playMode == Animation::PlayMode::LOOPED)
-	{
-		int i = 0;
-		while (i < framesToAdvance)
-		{
-			for (; i < framesToAdvance; ++keyFrameIt, ++i)
+			while (currentTime >= frameDuration)
 			{
-				if (keyFrameIt != keyFrames.end())
-					currentKeyFrame = *keyFrameIt;
-				else
+				currentTime -= frameDuration;
+				if (++keyFrameIt == keyFrames.end())
+				{
+					--keyFrameIt;
 					break;
+				}
 			}
-			if (keyFrameIt == keyFrames.end())
-			{
-				keyFrameIt = keyFrames.begin();
-			}
-		}
 
-		return currentKeyFrame;
-	}
-	else if (playMode == Animation::PlayMode::REVERSED)
-	{
-		for (int i = 0; i < framesToAdvance; ++keyFrameItReverse, ++i)
-		{
-			if (keyFrameItReverse != keyFrames.rend())
-				currentKeyFrame = *keyFrameItReverse;
-			else
-				break;
+			return *keyFrameIt;
 		}
-		
-		return currentKeyFrame;
-	}
-	else if (playMode == Animation::PlayMode::LOOP_REVERSED)
-	{
-		int i = 0;
-		while (i < framesToAdvance)
+		else if (playMode == Animation::PlayMode::LOOPED)
 		{
-			for (; i < framesToAdvance; ++keyFrameItReverse, ++i)
+			while (currentTime >= frameDuration)
 			{
-				if (keyFrameItReverse != keyFrames.rend())
-					currentKeyFrame = *keyFrameIt;
-				else
+				currentTime -= frameDuration;
+				if (++keyFrameIt == keyFrames.end())
+					keyFrameIt = keyFrames.begin();
+			}
+
+			return *keyFrameIt;
+		}
+		else if (playMode == Animation::PlayMode::REVERSED)
+		{
+			while (currentTime >= frameDuration)
+			{
+				currentTime -= frameDuration;
+				if (++keyFrameItReverse == keyFrames.rend())
+				{
+					--keyFrameItReverse;
 					break;
+				}
 			}
-			if (keyFrameItReverse == keyFrames.rend())
-			{
-				keyFrameItReverse = keyFrames.rbegin();
-			}
+
+			return *keyFrameItReverse;
 		}
+		else if (playMode == Animation::PlayMode::LOOP_REVERSED)
+		{
+			while (currentTime >= frameDuration)
+			{
+				currentTime -= frameDuration;
+				if (++keyFrameItReverse == keyFrames.rend())
+					keyFrameItReverse = keyFrames.rbegin();
+			}
 
-		return currentKeyFrame;
+			return *keyFrameItReverse;
+		}
 	}
-	else if (playMode == Animation::PlayMode::LOOP_RANDOM)
+	else
 	{
-		int keyFrameSize = keyFrames.size();
-		int element = rand() % --keyFrameSize;
-		currentKeyFrame = keyFrames[element];
-
-		return currentKeyFrame;
+		if (playMode == Animation::PlayMode::NORMAL || playMode == Animation::PlayMode::LOOPED)
+			return *keyFrameIt;
+		else if (playMode == Animation::PlayMode::REVERSED || playMode == Animation::PlayMode::LOOP_REVERSED)
+			return *keyFrameItReverse;
 	}
 }
 
@@ -169,4 +178,22 @@ void Animation::setPlayMode(PlayMode & newPlayMode)
 void Animation::restartFrameTimer()
 {
 	clock.restart();
+}
+
+void Animation::pause()
+{
+	paused = true;
+}
+
+void Animation::resume()
+{
+	paused = false;
+	restartFrameTimer();
+}
+
+void Animation::restart()
+{
+	keyFrameIt = keyFrames.begin();
+	keyFrameItReverse = keyFrames.rbegin();
+	restartFrameTimer();
 }

@@ -1,0 +1,174 @@
+
+Boy3.png
+size: 2048,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Poses/adventurer_action1
+  rotate: false
+  xy: 2, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_action2
+  rotate: false
+  xy: 84, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_back
+  rotate: false
+  xy: 166, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_cheer1
+  rotate: false
+  xy: 248, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_cheer2
+  rotate: false
+  xy: 330, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_climb1
+  rotate: false
+  xy: 412, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_climb2
+  rotate: false
+  xy: 494, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_duck
+  rotate: false
+  xy: 576, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_fall
+  rotate: false
+  xy: 658, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_hang
+  rotate: false
+  xy: 740, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_hold1
+  rotate: false
+  xy: 822, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_hold2
+  rotate: false
+  xy: 904, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_hurt
+  rotate: false
+  xy: 986, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_idle
+  rotate: false
+  xy: 1068, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_jump
+  rotate: false
+  xy: 1150, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_kick
+  rotate: false
+  xy: 1232, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_skid
+  rotate: false
+  xy: 1314, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_slide
+  rotate: false
+  xy: 1396, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_stand
+  rotate: false
+  xy: 1478, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_swim1
+  rotate: false
+  xy: 1560, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_swim2
+  rotate: false
+  xy: 1642, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_talk
+  rotate: false
+  xy: 1724, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_walk1
+  rotate: false
+  xy: 1806, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1
+Poses/adventurer_walk2
+  rotate: false
+  xy: 1888, 2
+  size: 80, 110
+  orig: 80, 110
+  offset: 0, 0
+  index: -1

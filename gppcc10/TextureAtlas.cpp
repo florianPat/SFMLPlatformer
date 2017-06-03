@@ -164,7 +164,7 @@ std::string TextureAtlas::getLineContentBetweeen(std::string & lineContent, char
 
 	size_t kommaPos = lineContent.find(secound);
 
-	size_t nCharsToCopy = ((int)(lineContent.size() - kommaPos)) - 1;
+	size_t nCharsToCopy = kommaPos;//(lineContent.size() - kommaPos);
 	result = lineContent.substr(0, nCharsToCopy);
 
 	lineContent.erase(0, ++kommaPos);
@@ -186,17 +186,10 @@ sf::Vector2i TextureAtlas::getLineContentRegionValues(std::string & lineContent,
 
 void TextureRegion::initSprite()
 {
-	if (textureAtlasFileName == "" || filename == "")
-	{
-		assert(textureAtlasFileName == "" || filename == "");
-		return;
-	}
-	else
-	{
-		atlasTexture = Assets::textureAssetManager.getOrAddRes(textureAtlasFileName);
-		regionSprite.setTexture(*atlasTexture.get());
-		regionSprite.setTextureRect(sf::IntRect(xy.x, xy.y, size.x, size.y));
-	}
+	assert(textureAtlasFileName != "" || filename != "");
+
+	atlasTexture = Assets::textureAssetManager.getOrAddRes(textureAtlasFileName);
+	regionSprite = sf::Sprite(*atlasTexture, sf::IntRect(xy.x, xy.y, size.x, size.y));
 }
 
 void TextureRegion::setRegion(int x, int y, int widht, int height)
