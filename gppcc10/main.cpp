@@ -12,6 +12,9 @@ int main()
 	window.setView(view);*/
 	
 	TextureAtlas atlas("player.atlas");
+	TextureAtlas atlas2("Boy.atlas");
+	auto it = atlas2.getRegions();
+	atlas.addRegion(it[0]);
 	Animation anim(atlas.getRegions(), sf::seconds(0.2f).asMicroseconds(), Animation::PlayMode::LOOPED);
 
 	TiledMap map("testLevel.tmx");

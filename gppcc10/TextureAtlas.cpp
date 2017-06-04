@@ -6,8 +6,7 @@
 #include "SFML\System\FileInputStream.hpp"
 #include "Assets.h"
 
-TextureAtlas::TextureAtlas(const std::string& filepath) : textureAtlas(std::make_unique<std::unordered_map<std::string, TextureRegion>>()),
-													fileHeader(std::make_unique<FileHeader>())
+TextureAtlas::TextureAtlas(const std::string& filepath) : textureAtlas(), fileHeader{}
 {
 	std::ifstream file;
 	file.open(filepath);
@@ -32,7 +31,7 @@ TextureAtlas::TextureAtlas(const std::string& filepath) : textureAtlas(std::make
 			{
 				case 0:
 				{
-					fileHeader->name = lineContent;
+					fileHeader.name = lineContent;
 				}	break;
 				case 1:
 				{
@@ -48,27 +47,27 @@ TextureAtlas::TextureAtlas(const std::string& filepath) : textureAtlas(std::make
 					width = atoi(widthChar.c_str());
 					height = atoi(heightChar.c_str());
 
-					fileHeader->size = sf::Vector2i(width, height);
+					fileHeader.size = sf::Vector2i(width, height);
 				}	break;
 				case 2:
 				{
 					size_t spacePos = lineContent.find(' ');
 					lineContent.erase(0, ++spacePos);
-					fileHeader->format = lineContent;
+					fileHeader.format = lineContent;
 				}	break;
 				case 3:
 				{
 					
-					fileHeader->filter[0] = getLineContentBetweeen(lineContent, ' ', ',');
+					fileHeader.filter[0] = getLineContentBetweeen(lineContent, ' ', ',');
 					
 					size_t nCharsToCopyFilter1 = lineContent.size();
-					fileHeader->filter[1] = lineContent.substr(0, nCharsToCopyFilter1);
+					fileHeader.filter[1] = lineContent.substr(0, nCharsToCopyFilter1);
 				}	break;
 				case 4:
 				{
 					size_t spacePos = lineContent.find(' ');
 					lineContent.erase(0, ++spacePos);
-					fileHeader->repeat = lineContent;
+					fileHeader.repeat = lineContent;
 				}
 			}
 		}
@@ -79,7 +78,7 @@ TextureAtlas::TextureAtlas(const std::string& filepath) : textureAtlas(std::make
 		bool isEof = false;
 		TextureRegion region;
 
-		region.textureAtlasFileName = fileHeader->name;
+		region.textureAtlasFileName = fileHeader.name;
 
 		for (int i = 0; i < FILE_LINES_PER_REGION; ++i)
 		{
@@ -114,12 +113,12 @@ TextureAtlas::TextureAtlas(const std::string& filepath) : textureAtlas(std::make
 		}
 
 		if(!isEof)
-			textureAtlas->insert({ region.filename, region });
+			textureAtlas.insert({ region.filename, region });
 	}
 
 	file.close();
 
-	for (auto i = textureAtlas->begin(); i != textureAtlas->end(); ++i)
+	for (auto i = textureAtlas.begin(); i != textureAtlas.end(); ++i)
 	{
 		i->second.initSprite();
 	}
@@ -127,8 +126,8 @@ TextureAtlas::TextureAtlas(const std::string& filepath) : textureAtlas(std::make
 
 std::unique_ptr<TextureRegion> TextureAtlas::findRegion(const std::string& name)
 {
-	auto result = textureAtlas->find(name);
-	if (result != textureAtlas->end())
+	auto result = textureAtlas.find(name);
+	if (result != textureAtlas.end())
 	{
 		return std::make_unique<TextureRegion>(result->second);
 	}
@@ -141,7 +140,7 @@ std::unique_ptr<TextureRegion> TextureAtlas::findRegion(const std::string& name)
 std::vector<TextureRegion> TextureAtlas::getRegions()
 {
 	auto result = std::vector<TextureRegion>();
-	for (auto it = textureAtlas->begin(); it != textureAtlas->end(); ++it)
+	for (auto it = textureAtlas.begin(); it != textureAtlas.end(); ++it)
 	{
 		result.push_back(it->second);
 	}
@@ -150,9 +149,9 @@ std::vector<TextureRegion> TextureAtlas::getRegions()
 
 void TextureAtlas::addRegion(const TextureRegion & adder)
 {
-	if (adder.filename == "" || adder.textureAtlasFileName != fileHeader->name)
-		return;
-	textureAtlas->insert({ adder.filename, adder });
+	/*if (adder.filename == "" || adder.textureAtlasFileName != fileHeader.name) //Do we really need this??
+		return;*/																 //It also works without it and is maybe better...
+	textureAtlas.insert({ adder.filename, adder });
 }
 
 std::string TextureAtlas::getLineContentBetweeen(std::string & lineContent, char first, char secound)

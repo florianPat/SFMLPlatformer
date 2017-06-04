@@ -38,4 +38,9 @@ private:
 	bool isWordInLine(const std::string& word, const std::string& lineContent);
 	size_t getEndOfWord(const std::string& word, const std::string& lineContent, bool* result);
 	std::string getLineContentBetween(std::string& lineContent, const std::string& endOfFirst, char secound);
+
+	std::string ParseTiles(std::ifstream& file);
+	void ParseLayer(std::ifstream& file, std::string& lineContent);
+	void ParseObjectGroups(std::ifstream& file, std::string& lineContent);
+	void MakeRenderTexture();
 };

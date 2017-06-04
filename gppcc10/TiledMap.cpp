@@ -30,129 +30,25 @@ TiledMap::TiledMap(const std::string & filepath) : tiles(), layers(), objectGrou
 		if (!isWordInLine("right-down", lineContent))
 			std::cerr << "Maps render-order has to be right-down!";
 
+
 		mapWidth = atoi(getLineContentBetween(lineContent, "width", '"').c_str()); // Maybe make this nicer??
 		mapHeight = atoi(getLineContentBetween(lineContent, "height", '"').c_str());
 
 		tileWidth = atoi(getLineContentBetween(lineContent, "tilewidth", '"').c_str());
 		tileHeight = atoi(getLineContentBetween(lineContent, "tileheight", '"').c_str());
 
-		//TODO: make functions for these giant code-blocks things...
-		//Tile
-		std::getline(file, lineContent);
+		lineContent = ParseTiles(file);
 
-		while (isWordInLine("<tileset", lineContent))
-		{
-			int firstgrid = atoi(getLineContentBetween(lineContent, "firstgid", '"').c_str());
-			int tileCount = atoi(getLineContentBetween(lineContent, "tilecount", '"').c_str());
-			for (int i = 0; i < tileCount; ++i)
-			{
-				std::getline(file, lineContent);
-				int id = atoi(getLineContentBetween(lineContent, "id", '"').c_str()) + firstgrid;
+		ParseLayer(file, lineContent);
 
-				std::getline(file, lineContent);
-				int width = atoi(getLineContentBetween(lineContent, "width", '"').c_str());
-				int height = atoi(getLineContentBetween(lineContent, "height", '"').c_str());
-				std::string source = getLineContentBetween(lineContent, "source", '"');
-				tiles.emplace(id, Tile{ id, width, height, Assets::textureAssetManager.getOrAddRes(source) });
-
-				std::getline(file, lineContent); //</tile>
-			}
-			std::getline(file, lineContent); //</tileset>
-			std::getline(file, lineContent); //Maybe new <tileset>...
-		}
-
-		//Layer
-		while (isWordInLine("<layer", lineContent))
-		{
-			std::string layerName = getLineContentBetween(lineContent, "name", '"');
-			int layerWidth = atoi(getLineContentBetween(lineContent, "width", '"').c_str());
-			int layerHeight = atoi(getLineContentBetween(lineContent, "height", '"').c_str());
-
-			layers.emplace(layerName, Layer{ layerName, layerWidth, layerHeight, std::vector<Tile>() });
-
-			auto currentLayer = layers.find(layerName);
-
-			std::getline(file, lineContent); //  <data encoding="csv">
-			if (!isWordInLine("csv", lineContent))
-				std::cerr << "Maps encoding has to be \"csv\"";
-
-			std::getline(file, lineContent); //Begin of encoding
-
-			for (int y = 0; y < layerHeight; ++y)
-			{
-				for (int x = 0; x < layerWidth; ++x)
-				{
-					size_t kommaPos = lineContent.find(',');
-					int nextTileId = atoi(lineContent.substr(0, kommaPos).c_str());
-					lineContent.erase(0, ++kommaPos);
-
-					Tile nextTile{ 0, 0, 0, nullptr };
-					if (tiles.find(nextTileId) != tiles.end())
-						nextTile = tiles.find(nextTileId)->second;
-					currentLayer->second.tiles.push_back(nextTile);
-				}
-				std::getline(file, lineContent);
-			}
-			std::getline(file, lineContent); // </layer>
-			std::getline(file, lineContent); //Maybe new <layer>
-		}
-
-		//ObjectGroup
-		while (isWordInLine("<objectgroup", lineContent))
-		{
-			std::string objectGroupName = getLineContentBetween(lineContent, "name", '"');
-			std::getline(file, lineContent);
-
-			std::vector<sf::IntRect> objectVector;
-			while (!isWordInLine("</objectgroup>", lineContent))
-			{
-				int x = atoi(getLineContentBetween(lineContent, "x", '"').c_str());
-				int y = atoi(getLineContentBetween(lineContent, "y", '"').c_str());
-				int width = atoi(getLineContentBetween(lineContent, "width", '"').c_str());
-				int height = atoi(getLineContentBetween(lineContent, "height", '"').c_str());
-
-				objectVector.push_back(sf::IntRect(x, y, width, height));
-
-				std::getline(file, lineContent);
-			}
-			objectGroups.emplace(objectGroupName, ObjectGroup{ objectGroupName, objectVector });
-
-			std::getline(file, lineContent);
-		}
+		ParseObjectGroups(file, lineContent);
 
 		if (!isWordInLine("</map>", lineContent))
 		{
 			std::cerr << "Tile Map Constructor: we should be at the end of the file!";
 		}
 
-		//Make render texture
-		if (texture.create(mapWidth*tileWidth, mapHeight*tileHeight))
-		{
-			texture.clear();
-
-			for (auto it = layers.begin(); it != layers.end(); ++it)
-			{
-				for (int y = 0; y < mapHeight; ++y)
-				{
-					for (int x = 0; x < mapWidth; ++x)
-					{
-						Layer currentLayer = it->second;
-						std::shared_ptr<sf::Texture> source = currentLayer.tiles[mapWidth * y + x].source;
-						if (source == nullptr)
-							continue;
-						sf::Sprite sprite(*source);
-						sprite.setPosition((float)x * tileWidth, (float)y * tileHeight);
-						texture.draw(sprite);
-
-						texture.display();
-					}
-				}
-			}
-
-			textureSprite = sf::Sprite(texture.getTexture());
-		}
-		else
-			std::cerr << "Could not create Render Texture in TileMap Constructor!";
+		MakeRenderTexture();
 	}
 }
 
@@ -250,4 +146,127 @@ std::string TiledMap::getLineContentBetween(std::string & lineContent, const std
 		}
 
 		return result;
+}
+
+void TiledMap::ParseLayer(std::ifstream & file, std::string& lineContent)
+{
+	while (isWordInLine("<layer", lineContent))
+	{
+		std::string layerName = getLineContentBetween(lineContent, "name", '"');
+		int layerWidth = atoi(getLineContentBetween(lineContent, "width", '"').c_str());
+		int layerHeight = atoi(getLineContentBetween(lineContent, "height", '"').c_str());
+
+		layers.emplace(layerName, Layer{ layerName, layerWidth, layerHeight, std::vector<Tile>() });
+
+		auto currentLayer = layers.find(layerName);
+
+		std::getline(file, lineContent); //  <data encoding="csv">
+		if (!isWordInLine("csv", lineContent))
+			std::cerr << "Maps encoding has to be \"csv\"";
+
+		std::getline(file, lineContent); //Begin of encoding
+
+		for (int y = 0; y < layerHeight; ++y)
+		{
+			for (int x = 0; x < layerWidth; ++x)
+			{
+				size_t kommaPos = lineContent.find(',');
+				int nextTileId = atoi(lineContent.substr(0, kommaPos).c_str());
+				lineContent.erase(0, ++kommaPos);
+
+				Tile nextTile{ 0, 0, 0, nullptr };
+				if (tiles.find(nextTileId) != tiles.end())
+					nextTile = tiles.find(nextTileId)->second;
+				currentLayer->second.tiles.push_back(nextTile);
+			}
+			std::getline(file, lineContent);
+		}
+		std::getline(file, lineContent); // </layer>
+		std::getline(file, lineContent); //Maybe new <layer>
+	}
+}
+
+void TiledMap::ParseObjectGroups(std::ifstream & file, std::string & lineContent)
+{
+	//ObjectGroup
+	while (isWordInLine("<objectgroup", lineContent))
+	{
+		std::string objectGroupName = getLineContentBetween(lineContent, "name", '"');
+		std::getline(file, lineContent);
+
+		std::vector<sf::IntRect> objectVector;
+		while (!isWordInLine("</objectgroup>", lineContent))
+		{
+			int x = atoi(getLineContentBetween(lineContent, "x", '"').c_str());
+			int y = atoi(getLineContentBetween(lineContent, "y", '"').c_str());
+			int width = atoi(getLineContentBetween(lineContent, "width", '"').c_str());
+			int height = atoi(getLineContentBetween(lineContent, "height", '"').c_str());
+
+			objectVector.push_back(sf::IntRect(x, y, width, height));
+
+			std::getline(file, lineContent);
+		}
+		objectGroups.emplace(objectGroupName, ObjectGroup{ objectGroupName, objectVector });
+
+		std::getline(file, lineContent);
+	}
+}
+
+void TiledMap::MakeRenderTexture()
+{
+	if (texture.create(mapWidth*tileWidth, mapHeight*tileHeight))
+	{
+		texture.clear();
+
+		for (auto it = layers.begin(); it != layers.end(); ++it)
+		{
+			for (int y = 0; y < mapHeight; ++y)
+			{
+				for (int x = 0; x < mapWidth; ++x)
+				{
+					Layer currentLayer = it->second;
+					std::shared_ptr<sf::Texture> source = currentLayer.tiles[mapWidth * y + x].source;
+					if (source == nullptr)
+						continue;
+					sf::Sprite sprite(*source);
+					sprite.setPosition((float)x * tileWidth, (float)y * tileHeight);
+					texture.draw(sprite);
+				}
+			}
+		}
+		texture.display();
+
+		textureSprite = sf::Sprite(texture.getTexture());
+	}
+	else
+		std::cerr << "Could not create Render Texture in TileMap Constructor!";
+}
+
+std::string TiledMap::ParseTiles(std::ifstream & file)
+{
+	std::string lineContent;
+	std::getline(file, lineContent);
+
+	while (isWordInLine("<tileset", lineContent))
+	{
+		int firstgrid = atoi(getLineContentBetween(lineContent, "firstgid", '"').c_str());
+		int tileCount = atoi(getLineContentBetween(lineContent, "tilecount", '"').c_str());
+		for (int i = 0; i < tileCount; ++i)
+		{
+			std::getline(file, lineContent);
+			int id = atoi(getLineContentBetween(lineContent, "id", '"').c_str()) + firstgrid;
+
+			std::getline(file, lineContent);
+			int width = atoi(getLineContentBetween(lineContent, "width", '"').c_str());
+			int height = atoi(getLineContentBetween(lineContent, "height", '"').c_str());
+			std::string source = getLineContentBetween(lineContent, "source", '"');
+			tiles.emplace(id, Tile{ id, width, height, Assets::textureAssetManager.getOrAddRes(source) });
+
+			std::getline(file, lineContent); //</tile>
+		}
+		std::getline(file, lineContent); //</tileset>
+		std::getline(file, lineContent); //Maybe new <tileset>...
+	}
+
+	return lineContent;
 }
