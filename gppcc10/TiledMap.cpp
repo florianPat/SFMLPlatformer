@@ -52,14 +52,14 @@ TiledMap::TiledMap(const std::string & filepath) : tiles(), layers(), objectGrou
 	}
 }
 
-std::vector<sf::IntRect> TiledMap::getObjectGroup(const std::string& objectGroupName)
+std::vector<sf::FloatRect> TiledMap::getObjectGroup(const std::string& objectGroupName)
 {
 	auto result = objectGroups.find(objectGroupName);
 	if (result != objectGroups.end())
 		return result->second.objects;
 	else
 	{
-		std::vector<sf::IntRect> result;
+		std::vector<sf::FloatRect> result;
 		return result; //TODO: Handle this and other cases better, maybe exception????
 	}
 }
@@ -194,7 +194,7 @@ void TiledMap::ParseObjectGroups(std::ifstream & file, std::string & lineContent
 		std::string objectGroupName = getLineContentBetween(lineContent, "name", '"');
 		std::getline(file, lineContent);
 
-		std::vector<sf::IntRect> objectVector;
+		std::vector<sf::FloatRect> objectVector;
 		while (!isWordInLine("</objectgroup>", lineContent))
 		{
 			int x = atoi(getLineContentBetween(lineContent, "x", '"').c_str());
@@ -202,7 +202,7 @@ void TiledMap::ParseObjectGroups(std::ifstream & file, std::string & lineContent
 			int width = atoi(getLineContentBetween(lineContent, "width", '"').c_str());
 			int height = atoi(getLineContentBetween(lineContent, "height", '"').c_str());
 
-			objectVector.push_back(sf::IntRect(x, y, width, height));
+			objectVector.push_back(sf::FloatRect(x, y, width, height));
 
 			std::getline(file, lineContent);
 		}

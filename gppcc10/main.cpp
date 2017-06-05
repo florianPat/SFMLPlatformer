@@ -3,6 +3,14 @@
 #include "Animation.h"
 #include "TiledMap.h"
 #include "Assets.h"
+#include "Player.h"
+#include "Physics.h"
+#include <iostream>
+
+PHYSICS_HANDLER(physicsHandler)
+{
+	std::cout << elementId1  << " " << elementId2<< std::endl;
+}
 
 int main()
 {
@@ -11,13 +19,16 @@ int main()
 	view.zoom(2.0f);
 	window.setView(view);*/
 	
-	TextureAtlas atlas("player.atlas");
-	TextureAtlas atlas2("Boy.atlas");
-	auto it = atlas2.getRegions();
-	atlas.addRegion(it[0]);
-	Animation anim(atlas.getRegions(), sf::seconds(0.2f).asMicroseconds(), Animation::PlayMode::LOOPED);
+	TextureAtlas playerAtlas("player.atlas");
+	Player player(sf::Vector2f(0.0f, 450.0f), playerAtlas);
 
 	TiledMap map("testLevel.tmx");
+
+	Physics physics(physicsHandler);
+	physics.addElementPointer("playerBoundingBox", { player.getBoundingBox() }, { "ground" });
+	physics.addElementValue("ground", map.getObjectGroup("Ground") );
+
+	sf::Clock clock;
 
 	while (window.isOpen())
 	{
@@ -28,9 +39,18 @@ int main()
 				window.close();
 		}
 
+		//Update
+		float dt = clock.restart().asSeconds();
+
+		player.update(dt);
+
+		physics.update();
+
+		//Render
 		window.clear();
 		map.draw(window);
-		window.draw(anim.getKeyFrame());
+		window.draw(player.draw());
+		
 		window.display();
 	}
 

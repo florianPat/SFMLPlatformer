@@ -21,7 +21,7 @@ class TiledMap
 	struct ObjectGroup
 	{
 		std::string name;
-		std::vector<sf::IntRect> objects;
+		std::vector<sf::FloatRect> objects;
 	};
 	std::unordered_map<int, Tile> tiles;
 	std::unordered_map<std::string, Layer> layers;
@@ -32,7 +32,7 @@ class TiledMap
 	sf::Sprite textureSprite;
 public:
 	TiledMap(const std::string& filepath);
-	std::vector<sf::IntRect> getObjectGroup(const std::string& objectGroupName);
+	std::vector<sf::FloatRect> getObjectGroup(const std::string& objectGroupName);
 	void draw(sf::RenderWindow& renderWindow);
 private:
 	bool isWordInLine(const std::string& word, const std::string& lineContent);
