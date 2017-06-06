@@ -10,24 +10,22 @@ class Player
 	sf::Vector2f pos, vel = { 0.0f, 0.0f };
 	static constexpr float speed = 100.0f;
 	const sf::Int64 jumpDuration = sf::seconds(0.2f).asMicroseconds();
+	sf::Clock jumpClock;
 	std::unordered_map<std::string, Animation> animations;
 	//sf::RenderWindow renderTarget;
 	TextureAtlas atlas;
 	sf::Sprite currentFrame;
 	sf::FloatRect shoes;
 	sf::FloatRect boundingBox;
+	bool obstacleCollision = false;
 	enum class JUMP_STATE
 	{
-		FALLING,
 		JUMPING,
+		FALLING,
 		GROUNDED
 	};
-	enum class WALK_STATE
-	{
-		IDLE,
-		LEFT,
-		RIGHT
-	};
+	JUMP_STATE jumpState = JUMP_STATE::FALLING;
+	static constexpr float gravity = -9.81f;
 private:
 	void addAnimation(std::vector<std::string> regionNames, std::string animationName);
 public:
@@ -36,4 +34,6 @@ public:
 	sf::Sprite draw();
 	sf::FloatRect* getShoes();
 	sf::FloatRect* getBoundingBox();
+	void collideWithObstacle();
+	void grounded();
 };

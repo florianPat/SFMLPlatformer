@@ -18,7 +18,7 @@ void Player::addAnimation(std::vector<std::string> regionNames, std::string anim
 }
 
 Player::Player(sf::Vector2f& pos, TextureAtlas& atlas) : pos(pos), animations(), atlas(atlas), 
-														 currentFrame(), shoes(), boundingBox()
+														 currentFrame(), shoes(), boundingBox(), jumpClock()
 {
 	addAnimation({ "PlayerIdel" }, "idle");
 	addAnimation({ "PlayerWalk1", "PlayerWalk2" }, "walking");
@@ -27,13 +27,36 @@ Player::Player(sf::Vector2f& pos, TextureAtlas& atlas) : pos(pos), animations(),
 
 void Player::update(float dt)
 {
+	//Walking
 	vel.x = 0.0f;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !obstacleCollision)
 		vel.x = speed;
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !obstacleCollision)
 		vel.x -= speed;
 
+	//jumping
+	vel.y -= gravity;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && jumpState == JUMP_STATE::GROUNDED)
+	{
+		jumpClock.restart();
+		jumpState = JUMP_STATE::JUMPING;
+	}
+	if (jumpState == JUMP_STATE::JUMPING)
+	{
+		if (jumpClock.getElapsedTime().asMicroseconds() > jumpDuration)
+		{
+			jumpState = JUMP_STATE::FALLING;
+		}
+		vel.y += speed / 4;
+	}
+	else if (jumpState == JUMP_STATE::GROUNDED)
+	{
+		vel.y = 0;
+	}
+
+	//setting...
 	pos += vel * dt;
 
 	if (vel.x < 0 || vel.x > 0)
@@ -52,6 +75,8 @@ void Player::update(float dt)
 	boundingBox.top = currentFrame.getPosition().y;
 	boundingBox.width = (float) currentFrame.getTextureRect().width;
 	boundingBox.height = (float) currentFrame.getTextureRect().height;
+
+	obstacleCollision = false;
 }
 
 sf::Sprite Player::draw()
@@ -67,4 +92,14 @@ sf::FloatRect* Player::getShoes()
 sf::FloatRect* Player::getBoundingBox()
 {
 	return &boundingBox;
+}
+
+void Player::collideWithObstacle()
+{
+	obstacleCollision = true;
+}
+
+void Player::grounded()
+{
+	jumpState = JUMP_STATE::GROUNDED;
 }

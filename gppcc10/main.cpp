@@ -9,7 +9,7 @@
 
 PHYSICS_HANDLER(physicsHandler)
 {
-	std::cout << elementId1  << " " << elementId2<< std::endl;
+
 }
 
 int main()
