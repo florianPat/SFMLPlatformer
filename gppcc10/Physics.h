@@ -47,10 +47,13 @@ public:
 		bool getIsGrounded();
 		bool getIsTriggerd();
 		sf::Vector2f& getPos();
+		void setPos(sf::Vector2f newPos);
 	};
 private:
 	static constexpr float gravity = 9.81f;
 	std::unordered_map<std::string, std::shared_ptr<Body>> bodies;
+private:
+	void handleCollision(std::_List_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, std::shared_ptr<Body>>>>>& it, const sf::FloatRect& bodyRect, const sf::FloatRect& elementRect);
 public:
 	Physics();
 	void update(float dt);

@@ -11,6 +11,7 @@ class Player
 	static constexpr float jumpSpeed = speed / 2.0f;
 	const sf::Int64 jumpDuration = sf::seconds(0.2f).asMicroseconds();
 	sf::Int64 jumpTime = 0;
+	sf::Vector2f staringPos;
 	std::unordered_map<std::string, Animation> animations;
 	sf::RenderWindow* renderTarget;
 	TextureAtlas atlas;

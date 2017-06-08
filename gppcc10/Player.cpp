@@ -20,7 +20,7 @@ void Player::addAnimation(std::vector<std::string> regionNames, std::string anim
 Player::Player(sf::Vector2f& pos, TextureAtlas& atlas, sf::RenderWindow* renderTarget) : animations(), atlas(atlas), 
 														 currentFrame(), boundingBox(),
 	body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd" })),
-	renderTarget(renderTarget)
+	renderTarget(renderTarget), staringPos(pos)
 {
 	addAnimation({ "PlayerIdel" }, "idle");
 	addAnimation({ "PlayerWalk1", "PlayerWalk2" }, "walking");
@@ -61,6 +61,14 @@ void Player::update(float dt)
 	else if (jumpState == JUMP_STATE::GROUNDED)
 	{
 		body->vel.y = 0;
+	}
+	else if (jumpState == JUMP_STATE::FALLING)
+	{
+		if (body->getPos().y > 800.0f)
+		{
+			body->setPos(sf::Vector2f{ 0.0f, 0.0f });
+			body->vel = sf::Vector2f{ 0.0f, 0.0f };
+		}
 	}
 
 	//setting...
