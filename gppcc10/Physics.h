@@ -3,9 +3,7 @@
 #include "SFML\Graphics.hpp"
 #include <vector>
 #include <unordered_map>
-
-#define PHYSICS_HANDLER(name) void name(std::string elementId1, std::string elementId2)
-typedef PHYSICS_HANDLER(PhysicsHandler);
+#include <memory>
 
 class Physics
 {
@@ -14,20 +12,46 @@ class Physics
 		std::string id;
 		std::vector<std::string> collisionIds;
 		bool collidersInPointer;
+		sf::FloatRect shoes;
+		sf::FloatRect leftBody, rightBody;
 		struct //TODO: Make this a union, if possible! ( First attempt was a fail ;) )
 		{
-			std::vector<sf::FloatRect*> collidersPointer;
-			std::vector<sf::FloatRect> collidersValue;
+			sf::FloatRect* collidersPointer;
+			sf::FloatRect collidersValue;
 		} colliders;
 	};
-private:
-	std::unordered_map<std::string, PhysicElement> bodies;
-	PhysicsHandler* physicsHandler;
 public:
-	Physics(PhysicsHandler* physicsHandler);
-	void update();
-	//Should be called, if the object is moving
-	void addElementPointer(std::string name, std::vector<sf::FloatRect*> colliders, std::vector<std::string> collisionId = {});
-	//Should be called if the object, is a static one
-	void addElementValue(std::string name, std::vector<sf::FloatRect> colliders, std::vector<std::string> collisionId = {});
+	class Body
+	{
+		friend class Physics;
+
+		bool isStatic;
+		bool isTrigger;
+		bool isGrounded = false;
+		bool triggered = false;
+		sf::Vector2f pos;
+		PhysicElement physicsElement;
+		//TODO: Add information what was hit (id) if isGrounded... you know
+	public:
+		sf::Vector2f vel = { 0.0f, 0.0f };
+	private:
+		void updateShoes();
+		void updateLeftRightBody();
+	public:
+		//Should be called, if the object is moving
+		Body(sf::Vector2f& pos, std::string name, sf::FloatRect* collider, bool isTrigger = false, bool isStatic = false, std::vector<std::string> collisionId = {});
+		//Should be called if the object, is a static one
+		Body(std::string name, sf::FloatRect collider, bool isTrigger = false, bool isStatic = true, std::vector<std::string> collisionId = {});
+		bool getIsGrounded();
+		bool getIsTriggerd();
+		sf::Vector2f& getPos();
+	};
+private:
+	static constexpr float gravity = 9.81f;
+	std::unordered_map<std::string, std::shared_ptr<Body>> bodies;
+public:
+	Physics();
+	void update(float dt);
+	void addElementPointer(std::shared_ptr<Body> body);
+	void addElementValue(Body body);
 };

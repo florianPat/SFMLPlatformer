@@ -17,8 +17,9 @@ void Player::addAnimation(std::vector<std::string> regionNames, std::string anim
 	animations.emplace(animationName, Animation(regions, sf::seconds(0.2f).asMicroseconds(), Animation::PlayMode::LOOPED));
 }
 
-Player::Player(sf::Vector2f& pos, TextureAtlas& atlas) : pos(pos), animations(), atlas(atlas), 
-														 currentFrame(), shoes(), boundingBox(), jumpClock()
+Player::Player(sf::Vector2f& pos, TextureAtlas& atlas) : animations(), atlas(atlas), 
+														 currentFrame(), boundingBox(),
+	body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd" }))
 {
 	addAnimation({ "PlayerIdel" }, "idle");
 	addAnimation({ "PlayerWalk1", "PlayerWalk2" }, "walking");
@@ -28,78 +29,62 @@ Player::Player(sf::Vector2f& pos, TextureAtlas& atlas) : pos(pos), animations(),
 void Player::update(float dt)
 {
 	//Walking
-	vel.x = 0.0f;
+	body->vel.x = 0.0f;
+	body->vel.y += 9.81f;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && !obstacleCollision)
-		vel.x = speed;
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && !obstacleCollision)
-		vel.x -= speed;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		body->vel.x = speed;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		body->vel.x = -speed;
 
 	//jumping
-	vel.y -= gravity;
+	if (body->getIsGrounded())
+		jumpState = JUMP_STATE::GROUNDED;
+	else if (jumpState != JUMP_STATE::JUMPING)
+		jumpState = JUMP_STATE::FALLING;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && jumpState == JUMP_STATE::GROUNDED)
 	{
-		jumpClock.restart();
 		jumpState = JUMP_STATE::JUMPING;
+		jumpTime = 0;
 	}
 	if (jumpState == JUMP_STATE::JUMPING)
 	{
-		if (jumpClock.getElapsedTime().asMicroseconds() > jumpDuration)
+		jumpTime += sf::seconds(dt).asMicroseconds();
+		if (jumpTime > jumpDuration)
 		{
 			jumpState = JUMP_STATE::FALLING;
 		}
-		vel.y += speed / 4;
+		body->vel.y -= jumpSpeed;
 	}
 	else if (jumpState == JUMP_STATE::GROUNDED)
 	{
-		vel.y = 0;
+		body->vel.y = 0;
 	}
 
 	//setting...
-	pos += vel * dt;
-
-	if (vel.x < 0 || vel.x > 0)
+	if (jumpState != JUMP_STATE::GROUNDED)
+		currentFrame = animations.find("jump")->second.getKeyFrame();
+	else if (body->vel.x != 0)
 		currentFrame = animations.find("walking")->second.getKeyFrame();
 	else
 		currentFrame = animations.find("idle")->second.getKeyFrame();
 
-	currentFrame.setPosition(pos);
-	
-	shoes.left = currentFrame.getPosition().x + 0.1f;
-	shoes.top = currentFrame.getPosition().y + currentFrame.getTextureRect().height - 1.0f;
-	shoes.width = currentFrame.getTextureRect().width - 0.1f;
-	shoes.height = 1.0f;
+	currentFrame.setPosition(body->getPos() + body->vel * dt);
 
 	boundingBox.left = currentFrame.getPosition().x;
 	boundingBox.top = currentFrame.getPosition().y;
 	boundingBox.width = (float) currentFrame.getTextureRect().width;
 	boundingBox.height = (float) currentFrame.getTextureRect().height;
-
-	obstacleCollision = false;
 }
 
 sf::Sprite Player::draw()
 {
+	currentFrame.setPosition(body->getPos());
 	return currentFrame;
 }
 
-sf::FloatRect* Player::getShoes()
+std::shared_ptr<Physics::Body> Player::getBody()
 {
-	return &shoes;
-}
-
-sf::FloatRect* Player::getBoundingBox()
-{
-	return &boundingBox;
-}
-
-void Player::collideWithObstacle()
-{
-	obstacleCollision = true;
-}
-
-void Player::grounded()
-{
-	jumpState = JUMP_STATE::GROUNDED;
+	return body;
 }

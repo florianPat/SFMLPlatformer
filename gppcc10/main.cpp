@@ -7,26 +7,21 @@
 #include "Physics.h"
 #include <iostream>
 
-PHYSICS_HANDLER(physicsHandler)
-{
-
-}
-
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(900, 600), "gppcc9-Game");
-	/*sf::View view;
-	view.zoom(2.0f);
-	window.setView(view);*/
+	window.setFramerateLimit(60);
 	
+	Physics physics;
+
 	TextureAtlas playerAtlas("player.atlas");
-	Player player(sf::Vector2f(0.0f, 450.0f), playerAtlas);
+	Player player(sf::Vector2f(0.0f, 0.0f), playerAtlas);
+	physics.addElementPointer(player.getBody());
 
 	TiledMap map("testLevel.tmx");
-
-	Physics physics(physicsHandler);
-	physics.addElementPointer("playerBoundingBox", { player.getBoundingBox() }, { "ground" });
-	physics.addElementValue("ground", map.getObjectGroup("Ground") );
+	//TODO: Maybe make this again that you also can pass a vector of sf::FloatRects....
+	for(size_t i = 0; i < map.getObjectGroup("Ground").size(); ++i)
+		physics.addElementValue(Physics::Body(std::string("ground" + i) /*WHY???*/, map.getObjectGroup("Ground")[i]));
 
 	sf::Clock clock;
 
@@ -44,7 +39,7 @@ int main()
 
 		player.update(dt);
 
-		physics.update();
+		physics.update(dt);
 
 		//Render
 		window.clear();
