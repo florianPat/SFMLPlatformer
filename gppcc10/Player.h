@@ -12,7 +12,7 @@ class Player
 	const sf::Int64 jumpDuration = sf::seconds(0.2f).asMicroseconds();
 	sf::Int64 jumpTime = 0;
 	std::unordered_map<std::string, Animation> animations;
-	//sf::RenderWindow renderTarget;
+	sf::RenderWindow* renderTarget;
 	TextureAtlas atlas;
 	sf::Sprite currentFrame;
 	sf::FloatRect boundingBox;
@@ -27,8 +27,8 @@ class Player
 private:
 	void addAnimation(std::vector<std::string> regionNames, std::string animationName);
 public:
-	Player(sf::Vector2f& pos, TextureAtlas& altas);
+	Player(sf::Vector2f& pos, TextureAtlas& altas, sf::RenderWindow* renderTarget);
 	void update(float dt);
-	sf::Sprite draw();
+	void draw();
 	std::shared_ptr<Physics::Body> getBody();
 };

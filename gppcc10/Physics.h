@@ -13,6 +13,7 @@ class Physics
 		std::vector<std::string> collisionIds;
 		bool collidersInPointer;
 		sf::FloatRect shoes;
+		sf::FloatRect head;
 		sf::FloatRect leftBody, rightBody;
 		struct //TODO: Make this a union, if possible! ( First attempt was a fail ;) )
 		{
@@ -37,6 +38,7 @@ public:
 	private:
 		void updateShoes();
 		void updateLeftRightBody();
+		void updateHead();
 	public:
 		//Should be called, if the object is moving
 		Body(sf::Vector2f& pos, std::string name, sf::FloatRect* collider, bool isTrigger = false, bool isStatic = false, std::vector<std::string> collisionId = {});

@@ -17,9 +17,10 @@ void Player::addAnimation(std::vector<std::string> regionNames, std::string anim
 	animations.emplace(animationName, Animation(regions, sf::seconds(0.2f).asMicroseconds(), Animation::PlayMode::LOOPED));
 }
 
-Player::Player(sf::Vector2f& pos, TextureAtlas& atlas) : animations(), atlas(atlas), 
+Player::Player(sf::Vector2f& pos, TextureAtlas& atlas, sf::RenderWindow* renderTarget) : animations(), atlas(atlas), 
 														 currentFrame(), boundingBox(),
-	body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd" }))
+	body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd" })),
+	renderTarget(renderTarget)
 {
 	addAnimation({ "PlayerIdel" }, "idle");
 	addAnimation({ "PlayerWalk1", "PlayerWalk2" }, "walking");
@@ -78,10 +79,11 @@ void Player::update(float dt)
 	boundingBox.height = (float) currentFrame.getTextureRect().height;
 }
 
-sf::Sprite Player::draw()
+void Player::draw()
 {
 	currentFrame.setPosition(body->getPos());
-	return currentFrame;
+	//NOTE: Maybe check for nullptr here??
+	renderTarget->draw(currentFrame);
 }
 
 std::shared_ptr<Physics::Body> Player::getBody()

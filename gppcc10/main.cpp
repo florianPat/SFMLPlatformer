@@ -11,11 +11,14 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(900, 600), "gppcc9-Game");
 	window.setFramerateLimit(60);
+
+	sf::View view = window.getDefaultView();
+	window.setView(view);
 	
 	Physics physics;
 
 	TextureAtlas playerAtlas("player.atlas");
-	Player player(sf::Vector2f(0.0f, 0.0f), playerAtlas);
+	Player player(sf::Vector2f(0.0f, 0.0f), playerAtlas, &window);
 	physics.addElementPointer(player.getBody());
 
 	TiledMap map("testLevel.tmx");
@@ -41,10 +44,13 @@ int main()
 
 		physics.update(dt);
 
+		view.setCenter({ player.getBody()->getPos().x, view.getCenter().y });
+		window.setView(view);
+
 		//Render
 		window.clear();
 		map.draw(window);
-		window.draw(player.draw());
+		player.draw();
 		
 		window.display();
 	}

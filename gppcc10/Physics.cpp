@@ -16,6 +16,7 @@ void Physics::update(float dt)
 
 			it->second->updateShoes();
 			it->second->updateLeftRightBody();
+			it->second->updateHead();
 
 			for (auto collisionIdIt = it->second->physicsElement.collisionIds.begin(); collisionIdIt != it->second->physicsElement.collisionIds.end(); ++collisionIdIt)
 			{
@@ -35,12 +36,18 @@ void Physics::update(float dt)
 									it->second->triggered = true;
 								else
 								{
-									//TODO: Paste this in all other cases or even better: make this nicer!
+									//TODO: make this nicer!
 									if (it->second->vel.y >= 0 &&
 										it->second->physicsElement.shoes.intersects(elementRect))
 									{
 										it->second->isGrounded = true;
 										it->second->pos.y = elementRect.top - elementRect.height + 0.25f;
+										it->second->vel.y = 0.0f;
+									}
+									else if (it->second->vel.y <= 0 &&
+										it->second->physicsElement.head.intersects(elementRect))
+									{
+										it->second->pos.y = elementRect.top + elementRect.height - 0.25f;
 										it->second->vel.y = 0.0f;
 									}
 									else if (it->second->vel.x < 0 &&
@@ -67,12 +74,18 @@ void Physics::update(float dt)
 									it->second->triggered = true;
 								else
 								{
-									//TODO: Paste this in all other cases or even better: make this nicer!
+									//TODO: make this nicer!
 									if (it->second->vel.y >= 0 &&
 										it->second->physicsElement.shoes.intersects(elementRect))
 									{
 										it->second->isGrounded = true;
 										it->second->pos.y = elementRect.top - elementRect.height + 0.25f;
+										it->second->vel.y = 0.0f;
+									}
+									else if (it->second->vel.y <= 0 &&
+										it->second->physicsElement.head.intersects(elementRect))
+									{
+										it->second->pos.y = elementRect.top + elementRect.height - 0.25f;
 										it->second->vel.y = 0.0f;
 									}
 									else if (it->second->vel.x < 0 &&
@@ -104,12 +117,18 @@ void Physics::update(float dt)
 									it->second->triggered = true;
 								else
 								{
-									//TODO: Paste this in all other cases or even better: make this nicer!
+									//TODO: make this nicer!
 									if (it->second->vel.y >= 0 &&
 										it->second->physicsElement.shoes.intersects(elementRect))
 									{
 										it->second->isGrounded = true;
 										it->second->pos.y = elementRect.top - elementRect.height + 0.25f;
+										it->second->vel.y = 0.0f;
+									}
+									else if (it->second->vel.y <= 0 &&
+										it->second->physicsElement.head.intersects(elementRect))
+									{
+										it->second->pos.y = elementRect.top + elementRect.height - 0.25f;
 										it->second->vel.y = 0.0f;
 									}
 									else if (it->second->vel.x < 0 &&
@@ -136,12 +155,18 @@ void Physics::update(float dt)
 									it->second->triggered = true;
 								else
 								{
-									//TODO: Paste this in all other cases or even better: make this nicer!
+									//TODO: make this nicer!
 									if (it->second->vel.y >= 0 &&
 										it->second->physicsElement.shoes.intersects(elementRect))
 									{
 										it->second->isGrounded = true;
 										it->second->pos.y = elementRect.top - elementRect.height + 0.25f;
+										it->second->vel.y = 0.0f;
+									}
+									else if (it->second->vel.y <= 0 &&
+										it->second->physicsElement.head.intersects(elementRect))
+									{
+										it->second->pos.y = elementRect.top + elementRect.height - 0.25f;
 										it->second->vel.y = 0.0f;
 									}
 									else if (it->second->vel.x < 0 &&
@@ -203,6 +228,17 @@ void Physics::Body::updateLeftRightBody()
 		physicsElement.rightBody.top = physicsElement.colliders.collidersPointer->top + 0.5f;
 		physicsElement.rightBody.width = physicsElement.colliders.collidersPointer->width / 2.0f;
 		physicsElement.rightBody.height = physicsElement.colliders.collidersPointer->height - 15.0f;
+	}
+}
+
+void Physics::Body::updateHead()
+{
+	if (!isStatic)
+	{
+		physicsElement.head.left = physicsElement.colliders.collidersPointer->left + 10.0f;
+		physicsElement.head.top = physicsElement.colliders.collidersPointer->top;
+		physicsElement.head.width = physicsElement.colliders.collidersPointer->width - 20.0f;
+		physicsElement.head.height = 15.0f;
 	}
 }
 
