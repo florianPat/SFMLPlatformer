@@ -114,6 +114,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="Assets.cpp" />
+    <ClCompile Include="Chest.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TextureAtlas.cpp" />
@@ -124,6 +125,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AssetManager.h" />
     <ClInclude Include="Assets.h" />
+    <ClInclude Include="Chest.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="TextureAtlas.h" />

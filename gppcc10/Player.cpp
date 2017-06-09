@@ -19,7 +19,7 @@ void Player::addAnimation(std::vector<std::string> regionNames, std::string anim
 
 Player::Player(sf::Vector2f& pos, TextureAtlas& atlas, sf::RenderWindow* renderTarget) : animations(), atlas(atlas), 
 														 currentFrame(), boundingBox(),
-	body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd" })),
+	body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd", "chest" })),
 	renderTarget(renderTarget), staringPos(pos)
 {
 	addAnimation({ "PlayerIdel" }, "idle");
@@ -71,6 +71,12 @@ void Player::update(float dt)
 		}
 	}
 
+	if (body->getIsTriggerd() && body->getTriggerInformation().triggerElementCollision == "chest")
+	{
+		body->setPos(sf::Vector2f{ 0.0f, 0.0f });
+		body->vel = sf::Vector2f{ 0.0f, 0.0f };
+	}
+
 	//setting...
 	if (jumpState != JUMP_STATE::GROUNDED)
 		currentFrame = animations.find("jump")->second.getKeyFrame();
@@ -90,7 +96,6 @@ void Player::update(float dt)
 void Player::draw()
 {
 	currentFrame.setPosition(body->getPos());
-	//NOTE: Maybe check for nullptr here??
 	renderTarget->draw(currentFrame);
 }
 

@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Physics.h"
 #include <iostream>
+#include "Chest.h"
 
 int main()
 {
@@ -14,7 +15,7 @@ int main()
 
 	sf::View view = window.getDefaultView();
 	window.setView(view);
-	
+
 	Physics physics;
 
 	TextureAtlas playerAtlas("player.atlas");
@@ -23,8 +24,10 @@ int main()
 
 	TiledMap map("testLevel.tmx");
 	//TODO: Maybe make this again that you also can pass a vector of sf::FloatRects....
-	for(size_t i = 0; i < map.getObjectGroup("Ground").size(); ++i)
+	for (size_t i = 0; i < map.getObjectGroup("Ground").size(); ++i)
 		physics.addElementValue(Physics::Body(std::string("ground" + i) /*WHY???*/, map.getObjectGroup("Ground")[i]));
+
+	Chest chest(map.getObjectGroup("truhe")[0], Assets::textureAssetManager.getOrAddRes("assetsRaw/64x64/Truhe.png"), &window, &physics);
 
 	sf::Clock clock;
 
@@ -42,6 +45,8 @@ int main()
 
 		player.update(dt);
 
+		chest.update(dt);
+
 		physics.update(dt);
 
 		view.setCenter({ player.getBody()->getPos().x, view.getCenter().y });
@@ -50,6 +55,7 @@ int main()
 		//Render
 		window.clear();
 		map.draw(window);
+		chest.draw();
 		player.draw();
 		
 		window.display();

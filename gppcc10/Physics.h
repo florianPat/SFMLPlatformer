@@ -26,13 +26,28 @@ public:
 	{
 		friend class Physics;
 
+		enum class TriggerBodyPart
+		{
+			NONE,
+			HEAD,
+			SHOES,
+			LEFT,
+			RIGHT
+		};
+
+		struct TriggerInformation
+		{
+			std::string triggerElementCollision = "";
+			TriggerBodyPart triggerBodyPart = TriggerBodyPart::NONE;
+		};
+
 		bool isStatic;
 		bool isTrigger;
 		bool isGrounded = false;
 		bool triggered = false;
+		TriggerInformation triggerInformation = {};
 		sf::Vector2f pos;
 		PhysicElement physicsElement;
-		//TODO: Add information what was hit (id) if isGrounded... you know
 	public:
 		sf::Vector2f vel = { 0.0f, 0.0f };
 	private:
@@ -48,15 +63,20 @@ public:
 		bool getIsTriggerd();
 		sf::Vector2f& getPos();
 		void setPos(sf::Vector2f newPos);
+		TriggerInformation& getTriggerInformation(); //TODO: Make this a callback thing and therefore then remove triggered
+		std::string& getId();
 	};
 private:
 	static constexpr float gravity = 9.81f;
 	std::unordered_map<std::string, std::shared_ptr<Body>> bodies;
 private:
-	void handleCollision(std::_List_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, std::shared_ptr<Body>>>>>& it, const sf::FloatRect& bodyRect, const sf::FloatRect& elementRect);
+	void handleCollision(std::_List_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, std::shared_ptr<Body>>>>>& it,
+		std::_List_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, std::shared_ptr<Body>>>>>& collideElement,
+		const sf::FloatRect& bodyRect, const sf::FloatRect& elementRect);
 public:
 	Physics();
 	void update(float dt);
 	void addElementPointer(std::shared_ptr<Body> body);
 	void addElementValue(Body body);
+	bool removeElementById(std::string& id);
 };

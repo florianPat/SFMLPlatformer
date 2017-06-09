@@ -1,39 +1,68 @@
 #include "Physics.h"
 #include <assert.h>
 
-void Physics::handleCollision(std::_List_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, std::shared_ptr<Body>>>>>& it, const sf::FloatRect & bodyRect, const sf::FloatRect & elementRect)
+void Physics::handleCollision(std::_List_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, std::shared_ptr<Body>>>>>& it,
+	std::_List_iterator<std::_List_val<std::_List_simple_types<std::pair<const std::string, std::shared_ptr<Body>>>>>& collideElement,
+	const sf::FloatRect & bodyRect, const sf::FloatRect & elementRect)
 {
 	if (bodyRect.intersects(elementRect))
 	{
 		if (it->second->isTrigger)
-			it->second->triggered = true;
-		else
 		{
-			if (it->second->vel.y >= 0 &&
-				it->second->physicsElement.shoes.intersects(elementRect))
+			it->second->triggered = true;
+			it->second->triggerInformation.triggerElementCollision = collideElement->second->physicsElement.id;
+			return; //NOTE: Safty first...
+		}
+		else if (collideElement->second->isTrigger)
+		{
+			it->second->triggered = true;
+			it->second->triggerInformation.triggerElementCollision = collideElement->second->physicsElement.id;
+		}
+			
+		if (it->second->vel.y >= 0 &&
+			it->second->physicsElement.shoes.intersects(elementRect))
+		{
+			it->second->isGrounded = true;
+			if (it->second->triggered)
 			{
-				it->second->isGrounded = true;
-				it->second->pos.y = elementRect.top - elementRect.height + 0.25f;
-				it->second->vel.y = 0.0f;
+				it->second->triggerInformation.triggerBodyPart = Body::TriggerBodyPart::SHOES;
+				return;
 			}
-			else if (it->second->vel.y <= 0 &&
-				it->second->physicsElement.head.intersects(elementRect))
+			it->second->pos.y = elementRect.top - elementRect.height + 0.25f;
+			it->second->vel.y = 0.0f;
+		}
+		else if (it->second->vel.y <= 0 &&
+			it->second->physicsElement.head.intersects(elementRect))
+		{
+			if (it->second->triggered)
 			{
-				it->second->pos.y = elementRect.top + elementRect.height - 0.25f;
-				it->second->vel.y = 0.0f;
+				it->second->triggerInformation.triggerBodyPart = Body::TriggerBodyPart::HEAD;
+				return;
 			}
-			else if (it->second->vel.x < 0 &&
-				it->second->physicsElement.leftBody.intersects(elementRect))
+			it->second->pos.y = elementRect.top + elementRect.height - 0.25f;
+			it->second->vel.y = 0.0f;
+		}
+		else if (it->second->vel.x < 0 &&
+			it->second->physicsElement.leftBody.intersects(elementRect))
+		{
+			if (it->second->triggered)
 			{
-				it->second->vel.x = 0;
-				it->second->pos.x = elementRect.left + elementRect.width;
+				it->second->triggerInformation.triggerBodyPart = Body::TriggerBodyPart::LEFT;
+				return;
 			}
-			else if (it->second->vel.x > 0 &&
-				it->second->physicsElement.rightBody.intersects(elementRect))
+			it->second->vel.x = 0;
+			it->second->pos.x = elementRect.left + elementRect.width;
+		}
+		else if (it->second->vel.x > 0 &&
+			it->second->physicsElement.rightBody.intersects(elementRect))
+		{
+			if (it->second->triggered)
 			{
-				it->second->vel.x = 0;
-				it->second->pos.x = elementRect.left - it->second->physicsElement.colliders.collidersPointer->width;
+				it->second->triggerInformation.triggerBodyPart = Body::TriggerBodyPart::RIGHT;
+				return;
 			}
+			it->second->vel.x = 0;
+			it->second->pos.x = elementRect.left - it->second->physicsElement.colliders.collidersPointer->width;
 		}
 	}
 }
@@ -46,14 +75,20 @@ void Physics::update(float dt)
 {
 	for (auto it = bodies.begin(); it != bodies.end(); ++it)
 	{
-		if (!it->second->isStatic)
+		if (!it->second->isStatic || it->second->isTrigger)
 		{
 			it->second->triggered = false;
-			it->second->isGrounded = false;
+			it->second->triggerInformation.triggerElementCollision = "";
+			it->second->triggerInformation.triggerBodyPart = Body::TriggerBodyPart::NONE;
 
-			it->second->updateShoes();
-			it->second->updateLeftRightBody();
-			it->second->updateHead();
+			if (!it->second->isTrigger)
+			{
+				it->second->isGrounded = false;
+
+				it->second->updateShoes();
+				it->second->updateLeftRightBody();
+				it->second->updateHead();
+			}
 
 			for (auto collisionIdIt = it->second->physicsElement.collisionIds.begin(); collisionIdIt != it->second->physicsElement.collisionIds.end(); ++collisionIdIt)
 			{
@@ -68,13 +103,13 @@ void Physics::update(float dt)
 						{
 							sf::FloatRect elementRect = *collideElement->second->physicsElement.colliders.collidersPointer;
 							
-							handleCollision(it, bodyRect, elementRect);
+							handleCollision(it, collideElement, bodyRect, elementRect);
 						}
 						else
 						{
 							sf::FloatRect elementRect = collideElement->second->physicsElement.colliders.collidersValue;
 							
-							handleCollision(it, bodyRect, elementRect);
+							handleCollision(it, collideElement, bodyRect, elementRect);
 						}
 					}
 					else
@@ -85,13 +120,13 @@ void Physics::update(float dt)
 						{
 							sf::FloatRect elementRect = *collideElement->second->physicsElement.colliders.collidersPointer;
 							
-							handleCollision(it, bodyRect, elementRect);
+							handleCollision(it, collideElement, bodyRect, elementRect);
 						}
 						else
 						{
 							sf::FloatRect elementRect = collideElement->second->physicsElement.colliders.collidersValue;
 							
-							handleCollision(it, bodyRect, elementRect);
+							handleCollision(it, collideElement, bodyRect, elementRect);
 						}
 					}
 				}
@@ -111,6 +146,11 @@ void Physics::addElementValue(Body body)
 {
 	std::shared_ptr<Body> bodyPtr = std::make_shared<Body>(Body(body.physicsElement.id, body.physicsElement.colliders.collidersValue, false, true, {}));
 	bodies.emplace(body.physicsElement.id, bodyPtr);
+}
+
+bool Physics::removeElementById(std::string & id)
+{
+	return bodies.erase(id);
 }
 
 void Physics::Body::updateShoes()
@@ -181,12 +221,7 @@ bool Physics::Body::getIsGrounded()
 
 bool Physics::Body::getIsTriggerd()
 {
-	assert(isTrigger); //For now, see TODO below
-
-	if (isTrigger)
-		return triggered;
-	else
-		return false; //TODO: Throw exeption...
+	return triggered;
 }
 
 sf::Vector2f& Physics::Body::getPos()
@@ -206,4 +241,14 @@ void Physics::Body::setPos(sf::Vector2f newPos)
 	if (!isStatic)
 		pos = newPos;
 	//TODO: else Throw exeption;
+}
+
+Physics::Body::TriggerInformation & Physics::Body::getTriggerInformation()
+{
+	return triggerInformation;
+}
+
+std::string & Physics::Body::getId()
+{
+	return physicsElement.id;
 }
