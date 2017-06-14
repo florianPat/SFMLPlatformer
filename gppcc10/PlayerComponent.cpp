@@ -20,7 +20,7 @@ void PlayerComponent::addAnimation(std::vector<std::string> regionNames, std::st
 PlayerComponent::PlayerComponent(sf::Vector2f& pos, TextureAtlas atlas, sf::RenderWindow* renderTarget) : animations(), atlas(atlas),
 currentFrame(), boundingBox(),
 body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd", "chest" })),
-renderTarget(renderTarget), staringPos(pos), view(renderTarget->getDefaultView()), Component(0) /*Set this to a "random" value*/
+renderTarget(renderTarget), staringPos(pos), view(renderTarget->getDefaultView()), Component(COMPONENT_PLAYER)
 {
 	addAnimation({ "PlayerIdel" }, "idle");
 	addAnimation({ "PlayerWalk1", "PlayerWalk2" }, "walking");

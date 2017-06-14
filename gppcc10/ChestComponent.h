@@ -6,6 +6,9 @@
 #include "SFML\Graphics.hpp"
 #include "Physics.h"
 
+constexpr int COMPONENT_CHEST = 0x52040c86;
+
+
 class ChestComponent : public Component
 {
 	sf::Vector2f pos;

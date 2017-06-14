@@ -7,6 +7,9 @@
 #include "PlayerComponent.h"
 #include "ChestComponent.h"
 
+constexpr int ACTOR_PLAYER = 0xba7bac8c;
+constexpr int ACTOR_CHEST = 0x9035afc9;
+
 void createPlayer(GameObjectManager& gom, Physics& physics, sf::RenderWindow* window);
 void createChest(GameObjectManager& gom, Physics* physics, sf::RenderWindow* window, TiledMap& map);
 
@@ -46,8 +49,8 @@ int main()
 
 		//Render
 		window.clear();
-		map.draw(window);
 
+		map.draw(window);
 		gom.drawActors();
 
 		window.display();
@@ -58,7 +61,7 @@ int main()
 
 void createPlayer(GameObjectManager& gom, Physics& physics, sf::RenderWindow* window)
 {
-	Actor player(0); //TODO: Make id "random"
+	Actor player(ACTOR_PLAYER);
 	std::shared_ptr<PlayerComponent> playerComponent = std::make_shared<PlayerComponent>(sf::Vector2f(0.0f, 0.0f), TextureAtlas("player.atlas"), window);
 	player.addComponent(playerComponent);
 	physics.addElementPointer(playerComponent->getBody());
@@ -68,8 +71,7 @@ void createPlayer(GameObjectManager& gom, Physics& physics, sf::RenderWindow* wi
 
 void createChest(GameObjectManager& gom, Physics* physics, sf::RenderWindow* window, TiledMap& map)
 {
-
-	Actor chest(1); //TODO: Make id "random"
+	Actor chest(ACTOR_CHEST);
 	std::shared_ptr<ChestComponent> chestComponent = std::make_shared<ChestComponent>(map.getObjectGroup("truhe")[0], Assets::textureAssetManager.getOrAddRes("assetsRaw/64x64/Truhe.png"), window, physics);
 	chest.addComponent(chestComponent);
 

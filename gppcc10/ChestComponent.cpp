@@ -3,7 +3,7 @@
 ChestComponent::ChestComponent(sf::FloatRect& boundingBox, std::shared_ptr<sf::Texture> texture, sf::RenderWindow * renderTarget, Physics* physics) : pos(pos), texture(texture),
 renderTarget(renderTarget), sprite(*texture), boundingBox(boundingBox),
 body(std::make_shared<Physics::Body>(std::string("chest"), this->boundingBox, true, true, std::vector<std::string>{"player"})),
-physics(physics), Component(1) //TODO: Make this "random"
+physics(physics), Component(COMPONENT_CHEST)
 {
 	sprite.setPosition(boundingBox.left, boundingBox.top);
 	physics->addElementPointer(body);

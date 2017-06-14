@@ -5,6 +5,8 @@
 #include "TextureAtlas.h"
 #include "Animation.h"
 
+constexpr int COMPONENT_PLAYER = 0x16501a3c;
+
 class PlayerComponent : public Component
 {
 	static constexpr float speed = 50.0f;
