@@ -1,15 +1,15 @@
-#include "Chest.h"
+#include "ChestComponent.h"
 
-Chest::Chest(sf::FloatRect& boundingBox, std::shared_ptr<sf::Texture> texture, sf::RenderWindow * renderTarget, Physics* physics) : pos(pos), texture(texture),
-	renderTarget(renderTarget), sprite(*texture), boundingBox(boundingBox),
-	body(std::make_shared<Physics::Body>(std::string("chest"), this->boundingBox, true, true, std::vector<std::string>{"player"})),
-	physics(physics)
+ChestComponent::ChestComponent(sf::FloatRect& boundingBox, std::shared_ptr<sf::Texture> texture, sf::RenderWindow * renderTarget, Physics* physics) : pos(pos), texture(texture),
+renderTarget(renderTarget), sprite(*texture), boundingBox(boundingBox),
+body(std::make_shared<Physics::Body>(std::string("chest"), this->boundingBox, true, true, std::vector<std::string>{"player"})),
+physics(physics), Component(1) //TODO: Make this "random"
 {
 	sprite.setPosition(boundingBox.left, boundingBox.top);
 	physics->addElementPointer(body);
 }
 
-void Chest::update(float dt)
+void ChestComponent::update(float dt)
 {
 	if (body)
 	{
@@ -32,12 +32,12 @@ void Chest::update(float dt)
 	}
 }
 
-void Chest::draw()
+void ChestComponent::draw()
 {
 	renderTarget->draw(sprite);
 }
 
-std::shared_ptr<Physics::Body> Chest::getBody()
+std::shared_ptr<Physics::Body> ChestComponent::getBody()
 {
 	return body;
 }

@@ -111,23 +111,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="Assets.cpp" />
     <ClCompile Include="Chest.cpp" />
+    <ClCompile Include="ChestComponent.cpp" />
+    <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="TestMain.cpp" />
     <ClCompile Include="TextureAtlas.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TiledMap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actor.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AssetManager.h" />
     <ClInclude Include="Assets.h" />
     <ClInclude Include="Chest.h" />
+    <ClInclude Include="ChestComponent.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="TextureAtlas.h" />
     <ClInclude Include="TiledMap.h" />
   </ItemGroup>

@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Animation.h"
-#include "TextureAtlas.h"
-#include "SFML\Graphics.hpp"
+#include "Component.h"
 #include "Physics.h"
-#include "Assets.h"
+#include "TextureAtlas.h"
+#include "Animation.h"
 
-class Player
+class PlayerComponent : public Component
 {
 	static constexpr float speed = 50.0f;
 	static constexpr float jumpSpeed = speed / 2.0f;
@@ -26,17 +25,12 @@ class Player
 	};
 	JUMP_STATE jumpState = JUMP_STATE::FALLING;
 	std::shared_ptr<Physics::Body> body;
-public:
-	enum class EventType
-	{
-		AddKey
-	};
+	sf::View view;
 private:
 	void addAnimation(std::vector<std::string> regionNames, std::string animationName);
 public:
-	Player(sf::Vector2f& pos, TextureAtlas& altas, sf::RenderWindow* renderTarget);
+	PlayerComponent(sf::Vector2f& pos, TextureAtlas altas, sf::RenderWindow* renderTarget);
 	void update(float dt);
 	void draw();
 	std::shared_ptr<Physics::Body> getBody();
-	void handleCommand(EventType& type);
 };

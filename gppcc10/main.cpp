@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+/*#include <SFML/Graphics.hpp>
 #include "TextureAtlas.h"
 #include "Animation.h"
 #include "TiledMap.h"
@@ -25,7 +25,7 @@ int main()
 	TiledMap map("testLevel.tmx");
 	//TODO: Maybe make this again that you also can pass a vector of sf::FloatRects....
 	for (size_t i = 0; i < map.getObjectGroup("Ground").size(); ++i)
-		physics.addElementValue(Physics::Body(std::string("ground" + i) /*WHY???*/, map.getObjectGroup("Ground")[i]));
+		physics.addElementValue(Physics::Body(std::string("ground" + i) /*WHY???*//*, map.getObjectGroup("Ground")[i]));
 
 	Chest chest(map.getObjectGroup("truhe")[0], Assets::textureAssetManager.getOrAddRes("assetsRaw/64x64/Truhe.png"), &window, &physics);
 
@@ -43,6 +43,12 @@ int main()
 		//Update
 		float dt = clock.restart().asSeconds();
 
+		//TODO: Make entity-system kind of thing: Handle all update + draw if the object is in vector
+		//		of entities, all have pointer to this "handle-class". There they can say fire event with id
+		//		wich was defined by constexpr int guid in the first place. Then the approviete handleEvent method 
+		//		on the object will be called, like pass it the name, find it in map of entities and go. 
+		//		Each entity should also can make a new one or delete one...
+		//Is only first test of system, maybe possibly will be greatly modified later on.
 		player.update(dt);
 
 		chest.update(dt);
@@ -62,4 +68,4 @@ int main()
 	}
 
 	return 0;
-}
+}*/

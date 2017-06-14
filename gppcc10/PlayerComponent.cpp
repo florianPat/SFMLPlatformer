@@ -1,6 +1,6 @@
-#include "Player.h"
+#include "PlayerComponent.h"
 
-void Player::addAnimation(std::vector<std::string> regionNames, std::string animationName)
+void PlayerComponent::addAnimation(std::vector<std::string> regionNames, std::string animationName)
 {
 	std::vector<TextureRegion> regions;
 	for (auto it = regionNames.begin(); it != regionNames.end(); ++it)
@@ -17,17 +17,17 @@ void Player::addAnimation(std::vector<std::string> regionNames, std::string anim
 	animations.emplace(animationName, Animation(regions, sf::seconds(0.2f).asMicroseconds(), Animation::PlayMode::LOOPED));
 }
 
-Player::Player(sf::Vector2f& pos, TextureAtlas& atlas, sf::RenderWindow* renderTarget) : animations(), atlas(atlas), 
-														 currentFrame(), boundingBox(),
-	body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd", "chest" })),
-	renderTarget(renderTarget), staringPos(pos)
+PlayerComponent::PlayerComponent(sf::Vector2f& pos, TextureAtlas atlas, sf::RenderWindow* renderTarget) : animations(), atlas(atlas),
+currentFrame(), boundingBox(),
+body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd", "chest" })),
+renderTarget(renderTarget), staringPos(pos), view(renderTarget->getDefaultView()), Component(0) /*Set this to a "random" value*/
 {
 	addAnimation({ "PlayerIdel" }, "idle");
 	addAnimation({ "PlayerWalk1", "PlayerWalk2" }, "walking");
 	addAnimation({ "PlayerJump" }, "jump");
 }
 
-void Player::update(float dt)
+void PlayerComponent::update(float dt)
 {
 	//Walking
 	body->vel.x = 0.0f;
@@ -89,25 +89,20 @@ void Player::update(float dt)
 
 	boundingBox.left = currentFrame.getPosition().x;
 	boundingBox.top = currentFrame.getPosition().y;
-	boundingBox.width = (float) currentFrame.getTextureRect().width;
-	boundingBox.height = (float) currentFrame.getTextureRect().height;
+	boundingBox.width = (float)currentFrame.getTextureRect().width;
+	boundingBox.height = (float)currentFrame.getTextureRect().height;
 }
 
-void Player::draw()
+void PlayerComponent::draw()
 {
 	currentFrame.setPosition(body->getPos());
 	renderTarget->draw(currentFrame);
+
+	view.setCenter({ body->getPos().x, view.getCenter().y });
+	renderTarget->setView(view);
 }
 
-std::shared_ptr<Physics::Body> Player::getBody()
+std::shared_ptr<Physics::Body> PlayerComponent::getBody()
 {
 	return body;
-}
-
-void Player::handleCommand(EventType & type)
-{
-	if (type == EventType::AddKey)
-	{
-		
-	}
 }
