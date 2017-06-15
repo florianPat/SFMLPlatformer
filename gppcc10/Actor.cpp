@@ -33,16 +33,3 @@ void Actor::draw()
 		it->second->draw();
 	}
 }
-
-//TODO: Firgure out how to make this a template function
-/*template <T>
-std::shared_ptr<T> Actor::getComponent(int componentId)
-{
-	for (auto it = components.begin(); it != components.end(); ++it)
-	{
-		if (it->second->getId() == componentId)
-			return *it;
-	}
-	return nullptr;
-}
-*/

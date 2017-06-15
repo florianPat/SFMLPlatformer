@@ -28,9 +28,11 @@ void GameObjectManager::drawActors()
 		it->second->draw();
 }
 
-std::unique_ptr<Actor> GameObjectManager::getActor(int actorId)
+Actor* GameObjectManager::getActor(int actorId)
 {
 	auto it = actors.find(actorId);
 	if (it != actors.end())
-		return std::move(it->second);
+		return it->second.get();
+	else
+		return nullptr;
 }

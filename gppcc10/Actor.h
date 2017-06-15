@@ -17,6 +17,18 @@ public:
 	Actor(const int& id);
 	void addComponent(std::shared_ptr<Component> component);
 	void removeComponent(int componentId);
-	//std::shared_ptr<T> getComponent(int componentId); //TODO: Make this a template!
+	template <typename T> std::shared_ptr<T> getComponent(int componentId); 
 	int getId() const { return id; };
 };
+
+template<typename T>
+inline std::shared_ptr<T> Actor::getComponent(int componentId)
+{
+	auto result = components.find(componentId);
+	if (result != components.end() && typeid(*result->second) == typeid(T)) //TODO: Does that work??
+	{
+		return std::make_shared<T>(dynamic_cast<T>(*result->second));
+	}
+	else
+		return nullptr;
+}

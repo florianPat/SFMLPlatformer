@@ -6,12 +6,16 @@
 #include "GameObjectManager.h"
 #include "PlayerComponent.h"
 #include "ChestComponent.h"
+#include "EventManager.h"
+#include <iostream>
 
 constexpr int ACTOR_PLAYER = 0xba7bac8c;
 constexpr int ACTOR_CHEST = 0x9035afc9;
 
 void createPlayer(GameObjectManager& gom, Physics& physics, sf::RenderWindow* window);
 void createChest(GameObjectManager& gom, Physics* physics, sf::RenderWindow* window, TiledMap& map);
+
+void Function(EventData& eventData);
 
 int main()
 {
@@ -27,6 +31,22 @@ int main()
 
 	sf::Clock clock;
 
+	EventManager eventManager;
+
+	//Test code
+	EventData ed(0);
+	std::function<void(EventData&)> funcy = Function;
+	DelegateFunction func = std::make_pair(0, funcy);
+	eventManager.addListener(ed.getEventId(), func);
+
+	eventManager.TriggerEvent(ed);
+
+	eventManager.removeListener(ed.getEventId(), func);
+	eventManager.TriggerEvent(ed);
+
+	eventManager.removeListener(ed.getEventId(), func);
+	////////////////////////
+	
 	GameObjectManager gom;
 	createChest(gom, &physics, &window, map);
 	createPlayer(gom, physics, &window);
@@ -76,4 +96,9 @@ void createChest(GameObjectManager& gom, Physics* physics, sf::RenderWindow* win
 	chest.addComponent(chestComponent);
 
 	gom.addActor(chest);
+}
+
+void Function(EventData & eventData)
+{
+	std::cout << "Function functions!!!!!" << std::endl;
 }

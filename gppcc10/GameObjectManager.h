@@ -14,5 +14,5 @@ public:
 	void destroyActor(int actorId);
 	void updateActors(float dt);
 	void drawActors();
-	std::unique_ptr<Actor> getActor(int actorId);
+	Actor* getActor(int actorId);
 };
