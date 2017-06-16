@@ -20,7 +20,7 @@ class ChestComponent : public Component
 public:
 	static constexpr int COMPONENT_CHEST_ID = 0x52040c86;
 public:
-	ChestComponent(sf::FloatRect& boundingBox, std::shared_ptr<sf::Texture> texture, sf::RenderWindow* renderTarget, Physics* physics, EventManager* eventManager);
+	ChestComponent(sf::FloatRect& boundingBox, std::shared_ptr<sf::Texture> texture, sf::RenderWindow* renderTarget, Physics* physics, EventManager* eventManager, Actor* owner);
 	void update(float dt);
 	void draw();
 	std::shared_ptr<Physics::Body> getBody();

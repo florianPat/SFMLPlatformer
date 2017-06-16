@@ -1,4 +1,5 @@
 #include "PlayerComponent.h"
+#include "Actor.h"
 
 void PlayerComponent::addAnimation(std::vector<std::string> regionNames, std::string animationName)
 {
@@ -20,13 +21,15 @@ void PlayerComponent::addAnimation(std::vector<std::string> regionNames, std::st
 void PlayerComponent::eventAddKeyHandler(std::unique_ptr<EventData>)
 {
 	std::cout << "EventAddKeyHandler Invoked!!" << std::endl;
+	std::shared_ptr<KeyComponent> keyComponent = std::make_shared<KeyComponent>(renderTarget, eventManager, owner);
+	owner->addComponent(keyComponent);
 }
 
-PlayerComponent::PlayerComponent(sf::Vector2f& pos, TextureAtlas atlas, sf::RenderWindow* renderTarget, EventManager* eventManager) : animations(), atlas(atlas),
+PlayerComponent::PlayerComponent(sf::Vector2f& pos, TextureAtlas atlas, sf::RenderWindow* renderTarget, EventManager* eventManager, Actor* owner) : animations(), atlas(atlas),
 currentFrame(), boundingBox(),
 body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd", "chest" })),
-renderTarget(renderTarget), staringPos(pos), view(renderTarget->getDefaultView()), Component(COMPONENT_PLAYER_ID, eventManager), eventAddKeyFunction(std::bind(&PlayerComponent::eventAddKeyHandler, this, std::placeholders::_1)),
-delegateAddKey(std::make_pair(delegateAddKeyId, eventAddKeyFunction))
+renderTarget(renderTarget), staringPos(pos), view(renderTarget->getDefaultView()), Component(COMPONENT_PLAYER_ID, eventManager, owner), 
+eventAddKeyFunction(std::bind(&PlayerComponent::eventAddKeyHandler, this, std::placeholders::_1)), delegateAddKey(std::make_pair(delegateAddKeyId, eventAddKeyFunction))
 {
 	addAnimation({ "PlayerIdel" }, "idle");
 	addAnimation({ "PlayerWalk1", "PlayerWalk2" }, "walking");
@@ -74,15 +77,10 @@ void PlayerComponent::update(float dt)
 	{
 		if (body->getPos().y > 800.0f)
 		{
+			//TODO: Reload level...
 			body->setPos(sf::Vector2f{ 0.0f, 0.0f });
 			body->vel = sf::Vector2f{ 0.0f, 0.0f };
 		}
-	}
-
-	if (body->getIsTriggerd() && body->getTriggerInformation().triggerElementCollision == "chest")
-	{
-		/*body->setPos(sf::Vector2f{ 0.0f, 0.0f });
-		body->vel = sf::Vector2f{ 0.0f, 0.0f };*/
 	}
 
 	//setting...

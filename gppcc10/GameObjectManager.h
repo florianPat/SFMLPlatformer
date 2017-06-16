@@ -10,7 +10,7 @@ class GameObjectManager
 
 public:
 	GameObjectManager();
-	void addActor(Actor& actor);
+	Actor* addActor(Actor& actor);
 	void destroyActor(int actorId);
 	void updateActors(float dt);
 	void drawActors();

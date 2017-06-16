@@ -17,17 +17,17 @@ public:
 	Actor(const int& id);
 	void addComponent(std::shared_ptr<Component> component);
 	void removeComponent(int componentId);
-	template <typename T> std::shared_ptr<T> getComponent(int componentId); 
+	template <typename T> T* getComponent(int componentId); 
 	int getId() const { return id; };
 };
 
 template<typename T>
-inline std::shared_ptr<T> Actor::getComponent(int componentId)
+inline T* Actor::getComponent(int componentId)
 {
 	auto result = components.find(componentId);
-	if (result != components.end() && typeid(*result->second) == typeid(T)) //TODO: Does that work??
+	if (result != components.end() && typeid(*result->second) == typeid(T))
 	{
-		return std::make_shared<T>(dynamic_cast<T>(*result->second));
+		return dynamic_cast<T*>(result->second.get()); //TODO: Do I really want to return a raw pointer?
 	}
 	else
 		return nullptr;

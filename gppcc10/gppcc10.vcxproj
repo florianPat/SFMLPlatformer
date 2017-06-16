@@ -119,6 +119,7 @@
     <ClCompile Include="ChestComponent.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
+    <ClCompile Include="KeyComponent.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="EventData.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="GameObjectManager.h" />
+    <ClInclude Include="KeyComponent.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerComponent.h" />

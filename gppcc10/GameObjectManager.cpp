@@ -4,9 +4,10 @@ GameObjectManager::GameObjectManager() : actors()
 {
 }
 
-void GameObjectManager::addActor(Actor& actor)
+Actor* GameObjectManager::addActor(Actor& actor)
 {
-	actors.emplace(actor.getId(), std::make_unique<Actor>(actor));
+	auto result = actors.emplace(actor.getId(), std::make_unique<Actor>(actor));
+	return result.first->second.get();
 }
 
 void GameObjectManager::destroyActor(int actorId)

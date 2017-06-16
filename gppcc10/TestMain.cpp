@@ -68,20 +68,20 @@ int main()
 void createPlayer(GameObjectManager& gom, Physics& physics, sf::RenderWindow* window, EventManager* eventManager)
 {
 	Actor player(ACTOR_PLAYER);
-	std::shared_ptr<PlayerComponent> playerComponent = std::make_shared<PlayerComponent>(sf::Vector2f(0.0f, 0.0f), TextureAtlas("player.atlas"), window, eventManager);
-	player.addComponent(playerComponent);
-	physics.addElementPointer(playerComponent->getBody());
+	Actor* playerP = gom.addActor(player);
 
-	gom.addActor(player);
+	std::shared_ptr<PlayerComponent> playerComponent = std::make_shared<PlayerComponent>(sf::Vector2f(0.0f, 0.0f), TextureAtlas("player.atlas"), window, eventManager, playerP);
+	playerP->addComponent(playerComponent);
+	physics.addElementPointer(playerComponent->getBody());
 }
 
 void createChest(GameObjectManager& gom, Physics* physics, sf::RenderWindow* window, TiledMap& map, EventManager* eventManager)
 {
 	Actor chest(ACTOR_CHEST);
-	std::shared_ptr<ChestComponent> chestComponent = std::make_shared<ChestComponent>(map.getObjectGroup("truhe")[0], Assets::textureAssetManager.getOrAddRes("assetsRaw/64x64/Truhe.png"), window, physics, eventManager);
-	chest.addComponent(chestComponent);
+	Actor* chestP = gom.addActor(chest);
 
-	gom.addActor(chest);
+	std::shared_ptr<ChestComponent> chestComponent = std::make_shared<ChestComponent>(map.getObjectGroup("truhe")[0], Assets::textureAssetManager.getOrAddRes("assetsRaw/64x64/Truhe.png"), window, physics, eventManager, chestP);
+	chestP->addComponent(chestComponent);
 }
 
 void Function(EventData & eventData)

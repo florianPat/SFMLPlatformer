@@ -6,8 +6,10 @@ Actor::Actor(const int& id) : components(), id(id)
 
 void Actor::addComponent(std::shared_ptr<Component> component)
 {
-	if(components.find(component->getId()) == components.end())
+	if (components.find(component->getId()) == components.end())
+	{
 		components.emplace(component->getId(), component);
+	}
 }
 
 void Actor::removeComponent(int componentId)
