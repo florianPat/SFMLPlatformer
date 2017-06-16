@@ -4,8 +4,9 @@
 #include "EventData.h"
 #include <iostream>
 #include <functional>
+#include <memory>
 
-typedef std::pair<int, std::function<void(EventData&)>> DelegateFunction;
+typedef std::pair<int, std::function<void(std::unique_ptr<EventData>)>> DelegateFunction;
 
 class EventManager
 {
@@ -14,5 +15,5 @@ public:
 	EventManager();
 	bool addListener(int eventType, DelegateFunction& delegateFunction);
 	bool removeListener(int eventType, DelegateFunction& delegateFunction);
-	bool TriggerEvent(EventData& eventData);
+	bool TriggerEvent(std::unique_ptr<EventData> eventData);
 };

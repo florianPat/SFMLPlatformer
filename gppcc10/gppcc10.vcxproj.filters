@@ -107,6 +107,9 @@
     <ClInclude Include="EventData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EventAddKey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="player.atlas" />

@@ -135,6 +135,7 @@
     <ClInclude Include="Chest.h" />
     <ClInclude Include="ChestComponent.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="EventAddKey.h" />
     <ClInclude Include="EventData.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="GameObjectManager.h" />

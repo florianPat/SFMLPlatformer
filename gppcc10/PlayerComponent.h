@@ -4,8 +4,7 @@
 #include "Physics.h"
 #include "TextureAtlas.h"
 #include "Animation.h"
-
-constexpr int COMPONENT_PLAYER = 0x16501a3c;
+#include "EventAddKey.h"
 
 class PlayerComponent : public Component
 {
@@ -28,10 +27,16 @@ class PlayerComponent : public Component
 	JUMP_STATE jumpState = JUMP_STATE::FALLING;
 	std::shared_ptr<Physics::Body> body;
 	sf::View view;
+	std::function<void(std::unique_ptr<EventData>)> eventAddKeyFunction;
+	static constexpr int delegateAddKeyId = 0x7b53b11d;
+	DelegateFunction delegateAddKey;
 private:
 	void addAnimation(std::vector<std::string> regionNames, std::string animationName);
+	void eventAddKeyHandler(std::unique_ptr<EventData>);
 public:
-	PlayerComponent(sf::Vector2f& pos, TextureAtlas altas, sf::RenderWindow* renderTarget);
+	static constexpr int COMPONENT_PLAYER_ID = 0x16501a3c;
+public:
+	PlayerComponent(sf::Vector2f& pos, TextureAtlas altas, sf::RenderWindow* renderTarget, EventManager* eventManager);
 	void update(float dt);
 	void draw();
 	std::shared_ptr<Physics::Body> getBody();

@@ -17,14 +17,22 @@ void PlayerComponent::addAnimation(std::vector<std::string> regionNames, std::st
 	animations.emplace(animationName, Animation(regions, sf::seconds(0.2f).asMicroseconds(), Animation::PlayMode::LOOPED));
 }
 
-PlayerComponent::PlayerComponent(sf::Vector2f& pos, TextureAtlas atlas, sf::RenderWindow* renderTarget) : animations(), atlas(atlas),
+void PlayerComponent::eventAddKeyHandler(std::unique_ptr<EventData>)
+{
+	std::cout << "EventAddKeyHandler Invoked!!" << std::endl;
+}
+
+PlayerComponent::PlayerComponent(sf::Vector2f& pos, TextureAtlas atlas, sf::RenderWindow* renderTarget, EventManager* eventManager) : animations(), atlas(atlas),
 currentFrame(), boundingBox(),
 body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd", "chest" })),
-renderTarget(renderTarget), staringPos(pos), view(renderTarget->getDefaultView()), Component(COMPONENT_PLAYER)
+renderTarget(renderTarget), staringPos(pos), view(renderTarget->getDefaultView()), Component(COMPONENT_PLAYER_ID, eventManager), eventAddKeyFunction(std::bind(&PlayerComponent::eventAddKeyHandler, this, std::placeholders::_1)),
+delegateAddKey(std::make_pair(delegateAddKeyId, eventAddKeyFunction))
 {
 	addAnimation({ "PlayerIdel" }, "idle");
 	addAnimation({ "PlayerWalk1", "PlayerWalk2" }, "walking");
 	addAnimation({ "PlayerJump" }, "jump");
+
+	eventManager->addListener(EventAddKey::EVENT_KEYADD_ID, delegateAddKey);
 }
 
 void PlayerComponent::update(float dt)

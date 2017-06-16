@@ -12,8 +12,8 @@
 constexpr int ACTOR_PLAYER = 0xba7bac8c;
 constexpr int ACTOR_CHEST = 0x9035afc9;
 
-void createPlayer(GameObjectManager& gom, Physics& physics, sf::RenderWindow* window);
-void createChest(GameObjectManager& gom, Physics* physics, sf::RenderWindow* window, TiledMap& map);
+void createPlayer(GameObjectManager& gom, Physics& physics, sf::RenderWindow* window, EventManager* eventManager);
+void createChest(GameObjectManager& gom, Physics* physics, sf::RenderWindow* window, TiledMap& map, EventManager* eventManager);
 
 void Function(EventData& eventData);
 
@@ -32,24 +32,10 @@ int main()
 	sf::Clock clock;
 
 	EventManager eventManager;
-
-	//Test code
-	EventData ed(0);
-	std::function<void(EventData&)> funcy = Function;
-	DelegateFunction func = std::make_pair(0, funcy);
-	eventManager.addListener(ed.getEventId(), func);
-
-	eventManager.TriggerEvent(ed);
-
-	eventManager.removeListener(ed.getEventId(), func);
-	eventManager.TriggerEvent(ed);
-
-	eventManager.removeListener(ed.getEventId(), func);
-	////////////////////////
 	
 	GameObjectManager gom;
-	createChest(gom, &physics, &window, map);
-	createPlayer(gom, physics, &window);
+	createChest(gom, &physics, &window, map, &eventManager);
+	createPlayer(gom, physics, &window, &eventManager);
 
 	while (window.isOpen())
 	{
@@ -79,20 +65,20 @@ int main()
 	return 0;
 }
 
-void createPlayer(GameObjectManager& gom, Physics& physics, sf::RenderWindow* window)
+void createPlayer(GameObjectManager& gom, Physics& physics, sf::RenderWindow* window, EventManager* eventManager)
 {
 	Actor player(ACTOR_PLAYER);
-	std::shared_ptr<PlayerComponent> playerComponent = std::make_shared<PlayerComponent>(sf::Vector2f(0.0f, 0.0f), TextureAtlas("player.atlas"), window);
+	std::shared_ptr<PlayerComponent> playerComponent = std::make_shared<PlayerComponent>(sf::Vector2f(0.0f, 0.0f), TextureAtlas("player.atlas"), window, eventManager);
 	player.addComponent(playerComponent);
 	physics.addElementPointer(playerComponent->getBody());
 
 	gom.addActor(player);
 }
 
-void createChest(GameObjectManager& gom, Physics* physics, sf::RenderWindow* window, TiledMap& map)
+void createChest(GameObjectManager& gom, Physics* physics, sf::RenderWindow* window, TiledMap& map, EventManager* eventManager)
 {
 	Actor chest(ACTOR_CHEST);
-	std::shared_ptr<ChestComponent> chestComponent = std::make_shared<ChestComponent>(map.getObjectGroup("truhe")[0], Assets::textureAssetManager.getOrAddRes("assetsRaw/64x64/Truhe.png"), window, physics);
+	std::shared_ptr<ChestComponent> chestComponent = std::make_shared<ChestComponent>(map.getObjectGroup("truhe")[0], Assets::textureAssetManager.getOrAddRes("assetsRaw/64x64/Truhe.png"), window, physics, eventManager);
 	chest.addComponent(chestComponent);
 
 	gom.addActor(chest);

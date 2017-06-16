@@ -48,15 +48,15 @@ bool EventManager::removeListener(int eventType, DelegateFunction & delegateFunc
 	return success;
 }
 
-bool EventManager::TriggerEvent(EventData & eventData)
+bool EventManager::TriggerEvent(std::unique_ptr<EventData> eventData)
 {
 	bool processed = false;
-	auto findIt = eventListenerMap.find(eventData.getEventId());
+	auto findIt = eventListenerMap.find(eventData->getEventId());
 	if (findIt != eventListenerMap.end())
 	{
 		for (auto it = findIt->second.begin(); it != findIt->second.end(); ++it)
 		{
-			it->second(eventData);
+			it->second(std::move(eventData));
 			processed = true;
 		}
 	}
