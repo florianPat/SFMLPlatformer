@@ -125,9 +125,8 @@
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
-    <ClCompile Include="TestMain.cpp" />
-    <ClCompile Include="TextureAtlas.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TextureAtlas.cpp" />
     <ClCompile Include="TiledMap.cpp" />
   </ItemGroup>
   <ItemGroup>

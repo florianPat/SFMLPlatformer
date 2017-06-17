@@ -20,7 +20,6 @@ void PlayerComponent::addAnimation(std::vector<std::string> regionNames, std::st
 
 void PlayerComponent::eventAddKeyHandler(std::unique_ptr<EventData>)
 {
-	std::cout << "EventAddKeyHandler Invoked!!" << std::endl;
 	std::shared_ptr<KeyComponent> keyComponent = std::make_shared<KeyComponent>(renderTarget, eventManager, owner);
 	owner->addComponent(keyComponent);
 }

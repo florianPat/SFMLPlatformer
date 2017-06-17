@@ -15,7 +15,10 @@ currentLevel(std::make_unique<Level>(window, levelName))
 		std::string newLevel = currentLevel->Go();
 
 		if (newLevel == "")
+		{
 			window->close();
+			return;
+		}
 
 		currentLevel = std::make_unique<Level>(window, newLevel);
 	}

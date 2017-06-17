@@ -39,7 +39,7 @@ private:
 	virtual void composeFrame();
 private:
 	void createChest();
-	void createPlayer();
+	void createPlayer(sf::Vector2f& playerPos);
 public:
 	Level(sf::RenderWindow* window, std::string tiledMapName);
 	std::string Go();

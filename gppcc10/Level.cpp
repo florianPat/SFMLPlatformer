@@ -34,12 +34,12 @@ void Level::createChest()
 	chestP->addComponent(chestComponent);
 }
 
-void Level::createPlayer()
+void Level::createPlayer(sf::Vector2f& playerPos)
 {
 	Actor player(ACTOR_PLAYER);
 	Actor* playerP = gom.addActor(player);
 
-	std::shared_ptr<PlayerComponent> playerComponent = std::make_shared<PlayerComponent>(sf::Vector2f(0.0f, 0.0f), TextureAtlas("player.atlas"), window, &eventManager, playerP);
+	std::shared_ptr<PlayerComponent> playerComponent = std::make_shared<PlayerComponent>(playerPos, TextureAtlas("player.atlas"), window, &eventManager, playerP);
 	playerP->addComponent(playerComponent);
 	physics.addElementPointer(playerComponent->getBody());
 }
@@ -48,6 +48,8 @@ Level::Level(sf::RenderWindow * window, std::string tiledMapName) : window(windo
 map(tiledMapName), clock(), gom(), eventManager(),
 eventLevelReloadFunction(std::bind(&Level::eventLevelReloadHandler, this, std::placeholders::_1)), delegateLevelReload(std::make_pair(delegateLevelReloadId, eventLevelReloadFunction))
 {
+	sf::Vector2f playerPos = { 0.0f, 0.0f };
+
 	auto mapObjectGroups = map.getObjectGroups();
 	for (auto it = mapObjectGroups.begin(); it != mapObjectGroups.end(); ++it)
 	{
@@ -56,12 +58,18 @@ eventLevelReloadFunction(std::bind(&Level::eventLevelReloadHandler, this, std::p
 			for (size_t i = 0; i < map.getObjectGroup("Ground").size(); ++i)
 				physics.addElementValue(Physics::Body(std::string("ground" + i) /*WHY???*/, map.getObjectGroup("Ground")[i]));
 		}
-		if (it->name == "truhe")
+		else if (it->name == "truhe")
 		{
 			createChest();
 		}
+		else if (it->name == "playerStart")
+		{
+			playerPos.x = it->objects[0].left;
+			playerPos.y = it->objects[0].top;
+		}
 	}
-	createPlayer();
+
+	createPlayer(playerPos);
 
 	eventManager.addListener(EventLevelReload::EVENT_LEVEL_RELOAD_ID, delegateLevelReload);
 }
@@ -74,7 +82,9 @@ std::string Level::Go()
 		while (window->pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
+			{
 				window->close();
+			}
 		}
 
 		updateModel();
