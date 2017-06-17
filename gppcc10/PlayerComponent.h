@@ -6,6 +6,7 @@
 #include "Animation.h"
 #include "EventAddKey.h"
 #include "KeyComponent.h"
+#include "EventLevelReload.h"
 
 class PlayerComponent : public Component
 {

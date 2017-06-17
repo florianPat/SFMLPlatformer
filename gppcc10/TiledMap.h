@@ -33,6 +33,7 @@ class TiledMap
 public:
 	TiledMap(const std::string& filepath);
 	std::vector<sf::FloatRect> getObjectGroup(const std::string& objectGroupName);
+	std::vector<ObjectGroup> getObjectGroups();
 	void draw(sf::RenderWindow& renderWindow);
 private:
 	bool isWordInLine(const std::string& word, const std::string& lineContent);

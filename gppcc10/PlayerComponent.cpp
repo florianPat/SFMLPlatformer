@@ -77,9 +77,8 @@ void PlayerComponent::update(float dt)
 	{
 		if (body->getPos().y > 800.0f)
 		{
-			//TODO: Reload level...
-			body->setPos(sf::Vector2f{ 0.0f, 0.0f });
-			body->vel = sf::Vector2f{ 0.0f, 0.0f };
+			std::unique_ptr<EventLevelReload> eventLR = std::make_unique<EventLevelReload>();
+			eventManager->TriggerEvent(std::move(eventLR));
 		}
 	}
 

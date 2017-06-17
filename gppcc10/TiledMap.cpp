@@ -64,6 +64,18 @@ std::vector<sf::FloatRect> TiledMap::getObjectGroup(const std::string& objectGro
 	}
 }
 
+std::vector<TiledMap::ObjectGroup> TiledMap::getObjectGroups()
+{
+	std::vector<ObjectGroup> result;
+
+	for (auto it = objectGroups.begin(); it != objectGroups.end(); ++it)
+	{
+		result.push_back(it->second);
+	}
+
+	return result;
+}
+
 void TiledMap::draw(sf::RenderWindow& renderWindow)
 {
 	renderWindow.draw(textureSprite);
@@ -202,7 +214,7 @@ void TiledMap::ParseObjectGroups(std::ifstream & file, std::string & lineContent
 			int width = atoi(getLineContentBetween(lineContent, "width", '"').c_str());
 			int height = atoi(getLineContentBetween(lineContent, "height", '"').c_str());
 
-			objectVector.push_back(sf::FloatRect(x, y, width, height));
+			objectVector.push_back(sf::FloatRect((float)x, (float)y, (float)width, (float)height));
 
 			std::getline(file, lineContent);
 		}
