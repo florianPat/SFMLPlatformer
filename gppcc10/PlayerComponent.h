@@ -33,6 +33,8 @@ class PlayerComponent : public Component
 	std::function<void(std::unique_ptr<EventData>)> eventAddKeyFunction;
 	static constexpr int delegateAddKeyId = 0x7b53b11d;
 	DelegateFunction delegateAddKey;
+
+	int diamondsCount = 0;
 private:
 	void addAnimation(std::vector<std::string> regionNames, std::string animationName);
 	void eventAddKeyHandler(std::unique_ptr<EventData>);
@@ -40,7 +42,7 @@ public:
 	static constexpr int COMPONENT_PLAYER_ID = 0x16501a3c;
 public:
 	PlayerComponent(sf::Vector2f& pos, TextureAtlas altas, sf::RenderWindow* renderTarget, EventManager* eventManager, Actor* owner);
-	void update(float dt);
-	void draw();
+	void update(float dt) override;
+	void draw() override;
 	std::shared_ptr<Physics::Body> getBody();
 };

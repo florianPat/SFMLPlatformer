@@ -81,6 +81,13 @@ void PlayerComponent::update(float dt)
 		}
 	}
 
+	//TODO: Get this to working...
+	//Maybe just let physics take an vector of sf::FloatRects and therefore just need to make one "name" or
+	//"key" for all the diamonds, so that we can just check for "Diamond" here!
+	//Diamond Count Upadte
+	if (body->getIsTriggerd() && body->getTriggerInformation().triggerElementCollision == "Diamond")
+		++diamondsCount;
+
 	//setting...
 	if (jumpState != JUMP_STATE::GROUNDED)
 		currentFrame = animations.find("jump")->second.getKeyFrame();

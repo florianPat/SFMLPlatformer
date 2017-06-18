@@ -117,6 +117,7 @@
     <ClCompile Include="Assets.cpp" />
     <ClCompile Include="Chest.cpp" />
     <ClCompile Include="ChestComponent.cpp" />
+    <ClCompile Include="DiamondComponent.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="Chest.h" />
     <ClInclude Include="ChestComponent.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="DiamondComponent.h" />
     <ClInclude Include="EventAddKey.h" />
     <ClInclude Include="EventData.h" />
     <ClInclude Include="EventManager.h" />

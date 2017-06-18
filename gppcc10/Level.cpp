@@ -25,6 +25,15 @@ void Level::composeFrame()
 	window->display();
 }
 
+void Level::createDiamonds(std::vector<sf::FloatRect>& objectGroup)
+{
+	Actor diamond(ACOTOR_DIAMOND);
+	Actor* diamondP = gom.addActor(diamond);
+
+	std::shared_ptr<DiamondCompoennt> diamondComponent = std::make_shared<DiamondCompoennt>(objectGroup, window, &physics, &eventManager, diamondP);
+	diamondP->addComponent(diamondComponent);
+}
+
 void Level::createChest()
 {
 	Actor chest(ACTOR_CHEST);
@@ -66,6 +75,10 @@ eventLevelReloadFunction(std::bind(&Level::eventLevelReloadHandler, this, std::p
 		{
 			playerPos.x = it->objects[0].left;
 			playerPos.y = it->objects[0].top;
+		}
+		else if (it->name == "diamonds")
+		{
+			createDiamonds(it->objects);
 		}
 	}
 
