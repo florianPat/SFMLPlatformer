@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Physics.h"
 #include "Assets.h"
+#include "EventCollectedAllDiamonds.h"
 
 class DiamondCompoennt : public Component
 {
@@ -12,6 +13,8 @@ class DiamondCompoennt : public Component
 	Physics* physics;
 	sf::FloatRect boundingBox;
 	std::vector<std::shared_ptr<Physics::Body>> bodies;
+
+
 public:
 	static constexpr int COMPONENT_DIAMOND_ID = 0x327633a4;
 public:

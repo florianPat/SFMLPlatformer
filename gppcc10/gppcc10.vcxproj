@@ -129,6 +129,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TextureAtlas.cpp" />
     <ClCompile Include="TiledMap.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -140,6 +141,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="DiamondComponent.h" />
     <ClInclude Include="EventAddKey.h" />
+    <ClInclude Include="EventCollectedAllDiamonds.h" />
     <ClInclude Include="EventData.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Game.h" />
@@ -152,6 +154,7 @@
     <ClInclude Include="EventLevelReload.h" />
     <ClInclude Include="TextureAtlas.h" />
     <ClInclude Include="TiledMap.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="player.atlas" />

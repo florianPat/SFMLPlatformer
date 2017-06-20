@@ -36,7 +36,6 @@ public:
 	std::vector<ObjectGroup> getObjectGroups();
 	void draw(sf::RenderWindow& renderWindow);
 private:
-	bool isWordInLine(const std::string& word, const std::string& lineContent);
 	size_t getEndOfWord(const std::string& word, const std::string& lineContent, bool* result);
 	std::string getLineContentBetween(std::string& lineContent, const std::string& endOfFirst, char secound);
 

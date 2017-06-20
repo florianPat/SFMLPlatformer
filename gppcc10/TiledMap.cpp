@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include "Assets.h"
+#include "Utils.h"
 
 TiledMap::TiledMap(const std::string & filepath) : tiles(), layers(), objectGroups(), 
 												   textureSprite(), texture()
@@ -24,10 +25,10 @@ TiledMap::TiledMap(const std::string & filepath) : tiles(), layers(), objectGrou
 		std::getline(file, lineContent);
 
 
-		if (!isWordInLine("orthogonal", lineContent))
+		if (!utils::isWordInLine("orthogonal", lineContent))
 			std::cerr << "Map has to be orthogonal!";
 
-		if (!isWordInLine("right-down", lineContent))
+		if (!utils::isWordInLine("right-down", lineContent))
 			std::cerr << "Maps render-order has to be right-down!";
 
 
@@ -43,7 +44,7 @@ TiledMap::TiledMap(const std::string & filepath) : tiles(), layers(), objectGrou
 
 		ParseObjectGroups(file, lineContent);
 
-		if (!isWordInLine("</map>", lineContent))
+		if (!utils::isWordInLine("</map>", lineContent))
 		{
 			std::cerr << "Tile Map Constructor: we should be at the end of the file!";
 		}
@@ -79,35 +80,6 @@ std::vector<TiledMap::ObjectGroup> TiledMap::getObjectGroups()
 void TiledMap::draw(sf::RenderWindow& renderWindow)
 {
 	renderWindow.draw(textureSprite);
-}
-
-bool TiledMap::isWordInLine(const std::string & word, const std::string & lineContent)
-{
-	size_t o = 0;
-	bool result = false;
-	while (o < lineContent.size() && !result)
-	{
-		o = lineContent.find(word[0], o);
-		std::string searchWord(word);
-		auto it = ++searchWord.begin();
-		for (; o < lineContent.size(); ++it)
-		{
-			if (it != searchWord.end())
-			{
-				if (lineContent.at(++o) == it[0])
-					continue;
-				else
-					break;
-			}
-			else
-			{
-				result = true;
-				break;
-			}
-		}
-	}
-
-	return result;
 }
 
 size_t TiledMap::getEndOfWord(const std::string & word, const std::string & lineContent, bool* result)
@@ -162,7 +134,7 @@ std::string TiledMap::getLineContentBetween(std::string & lineContent, const std
 
 void TiledMap::ParseLayer(std::ifstream & file, std::string& lineContent)
 {
-	while (isWordInLine("<layer", lineContent))
+	while (utils::isWordInLine("<layer", lineContent))
 	{
 		std::string layerName = getLineContentBetween(lineContent, "name", '"');
 		int layerWidth = atoi(getLineContentBetween(lineContent, "width", '"').c_str());
@@ -173,7 +145,7 @@ void TiledMap::ParseLayer(std::ifstream & file, std::string& lineContent)
 		auto currentLayer = layers.find(layerName);
 
 		std::getline(file, lineContent); //  <data encoding="csv">
-		if (!isWordInLine("csv", lineContent))
+		if (!utils::isWordInLine("csv", lineContent))
 			std::cerr << "Maps encoding has to be \"csv\"";
 
 		std::getline(file, lineContent); //Begin of encoding
@@ -201,13 +173,13 @@ void TiledMap::ParseLayer(std::ifstream & file, std::string& lineContent)
 void TiledMap::ParseObjectGroups(std::ifstream & file, std::string & lineContent)
 {
 	//ObjectGroup
-	while (isWordInLine("<objectgroup", lineContent))
+	while (utils::isWordInLine("<objectgroup", lineContent))
 	{
 		std::string objectGroupName = getLineContentBetween(lineContent, "name", '"');
 		std::getline(file, lineContent);
 
 		std::vector<sf::FloatRect> objectVector;
-		while (!isWordInLine("</objectgroup>", lineContent))
+		while (!utils::isWordInLine("</objectgroup>", lineContent))
 		{
 			int x = atoi(getLineContentBetween(lineContent, "x", '"').c_str());
 			int y = atoi(getLineContentBetween(lineContent, "y", '"').c_str());
@@ -259,7 +231,7 @@ std::string TiledMap::ParseTiles(std::ifstream & file)
 	std::string lineContent;
 	std::getline(file, lineContent);
 
-	while (isWordInLine("<tileset", lineContent))
+	while (utils::isWordInLine("<tileset", lineContent))
 	{
 		int firstgrid = atoi(getLineContentBetween(lineContent, "firstgid", '"').c_str());
 		int tileCount = atoi(getLineContentBetween(lineContent, "tilecount", '"').c_str());

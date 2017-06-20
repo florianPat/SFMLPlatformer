@@ -14,15 +14,19 @@ void KeyComponent::update(float dt)
 	PlayerComponent* playerComponent = owner->getComponent<PlayerComponent>(PlayerComponent::COMPONENT_PLAYER_ID);
 	sf::Vector2f playerPos = playerComponent->getBody()->getPos();
 
+	sf::Vector2f vel = {0.0f, 0.0f};
+
 	if (sprite.getPosition().x + 100.0f < playerPos.x)
-		sprite.setPosition(sprite.getPosition().x + speed, sprite.getPosition().y);
+		vel.x = speed;
 	else if (sprite.getPosition().x - 100.0f > playerPos.x)
-		sprite.setPosition(sprite.getPosition().x -speed, sprite.getPosition().y);
+		vel.x = -speed;
 	
 	if (sprite.getPosition().y + 50.0f < playerPos.y)
-		sprite.setPosition(sprite.getPosition().x, sprite.getPosition().y + speed);
+		vel.y = speed;
 	else if (sprite.getPosition().y - 50.0f > playerPos.y)
-		sprite.setPosition(sprite.getPosition().x, sprite.getPosition().y - speed);
+		vel.y = -speed;
+
+	sprite.setPosition(sprite.getPosition() + vel * dt);
 }
 
 void KeyComponent::draw()

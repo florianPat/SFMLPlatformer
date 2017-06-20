@@ -10,36 +10,42 @@ Component(COMPONENT_DIAMOND_ID, eventManager, owner)
 		sprites.push_back(sf::Sprite(*texture));
 		sprites[i].setPosition(it->left, it->top);
 
-		bodies.push_back(std::make_shared<Physics::Body>("Diamond" + i, *it, true, true, std::vector<std::string>{"player"}));
+		bodies.push_back(std::make_shared<Physics::Body>(std::string("Diamond" + std::to_string(i)), *it, true, true, std::vector<std::string>{"player"}));
 		physics->addElementPointer(bodies[i]);
 	}
 }
 
 void DiamondCompoennt::update(float dt)
 {
-	auto itSprites = sprites.begin();
-	for (auto it = bodies.begin(); it != bodies.end(); ++it, ++itSprites)
+	if (bodies.size())
 	{
-		if (*it)
+		auto itSprites = sprites.begin();
+		for (auto it = bodies.begin(); it != bodies.end(); ++it, ++itSprites)
 		{
-			if ((*it)->getIsTriggerd() && (*it)->getTriggerInformation().triggerElementCollision == "player")
+			if (*it)
 			{
-				physics->removeElementById((*it)->getId());
-				if (it->unique())
+				if ((*it)->getIsTriggerd() && (*it)->getTriggerInformation().triggerElementCollision == "player")
 				{
-					auto copySprite = itSprites++;
-					itSprites = sprites.erase(copySprite);
-					auto copy = it++;
-					copy->reset();
-					it = bodies.erase(copy);
+					physics->removeElementById((*it)->getId());
+					if (it->unique())
+					{
+						auto copySprite = itSprites++;
+						itSprites = sprites.erase(copySprite);
+						auto copy = it++;
+						copy->reset();
+						it = bodies.erase(copy);
 
-					if (bodies.size() == 0)
-						break;
+						if (bodies.size() == 0)
+						{
+							eventManager->TriggerEvent(std::make_unique<EventCollectedAllDiamonds>());
+							break;
+						}
 
-					if (it != bodies.begin())
-						--it;
-					if (itSprites != sprites.begin())
-						--itSprites;
+						if (it != bodies.begin())
+							--it;
+						if (itSprites != sprites.begin())
+							--itSprites;
+					}
 				}
 			}
 		}
@@ -48,8 +54,11 @@ void DiamondCompoennt::update(float dt)
 
 void DiamondCompoennt::draw()
 {
-	for (auto it = sprites.begin(); it != sprites.end(); ++it)
+	if (bodies.size())
 	{
-		renderTarget->draw(*it);
+		for (auto it = sprites.begin(); it != sprites.end(); ++it)
+		{
+			renderTarget->draw(*it);
+		}
 	}
 }

@@ -10,7 +10,7 @@ class KeyComponent : public Component
 	sf::Sprite sprite;
 	sf::RenderWindow* renderTarget;
 
-	static constexpr float speed = 5.0f;
+	static constexpr float speed = 300.0f; //TODO: Why I have to move him so fast if the players speed is only 50, and if he moves less, he gets "lost", and if he moves so fast, there is no smooth animation
 public:
 	static constexpr int COMPONENT_KEY_ID = 0xd3f95aea;
 public:

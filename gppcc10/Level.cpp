@@ -65,7 +65,7 @@ eventLevelReloadFunction(std::bind(&Level::eventLevelReloadHandler, this, std::p
 		if (it->name == "Ground")
 		{
 			for (size_t i = 0; i < map.getObjectGroup("Ground").size(); ++i)
-				physics.addElementValue(Physics::Body(std::string("ground" + i) /*WHY???*/, map.getObjectGroup("Ground")[i]));
+				physics.addElementValue(Physics::Body(std::string("ground" + std::to_string(i)), map.getObjectGroup("Ground")[i]));
 		}
 		else if (it->name == "truhe")
 		{

@@ -1,5 +1,6 @@
 #include "PlayerComponent.h"
 #include "Actor.h"
+#include "Utils.h"
 
 void PlayerComponent::addAnimation(std::vector<std::string> regionNames, std::string animationName)
 {
@@ -26,7 +27,7 @@ void PlayerComponent::eventAddKeyHandler(std::unique_ptr<EventData>)
 
 PlayerComponent::PlayerComponent(sf::Vector2f& pos, TextureAtlas atlas, sf::RenderWindow* renderTarget, EventManager* eventManager, Actor* owner) : animations(), atlas(atlas),
 currentFrame(), boundingBox(),
-body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground", "round", "ound", "und", "nd", "chest" })),
+body(std::make_shared<Physics::Body>(pos, "player", &boundingBox, false, false, std::vector<std::string>{ "ground0", "ground1", "ground2", "ground3", "ground4" })),
 renderTarget(renderTarget), staringPos(pos), view(renderTarget->getDefaultView()), Component(COMPONENT_PLAYER_ID, eventManager, owner), 
 eventAddKeyFunction(std::bind(&PlayerComponent::eventAddKeyHandler, this, std::placeholders::_1)), delegateAddKey(std::make_pair(delegateAddKeyId, eventAddKeyFunction))
 {
@@ -81,11 +82,9 @@ void PlayerComponent::update(float dt)
 		}
 	}
 
-	//TODO: Get this to working...
-	//Maybe just let physics take an vector of sf::FloatRects and therefore just need to make one "name" or
-	//"key" for all the diamonds, so that we can just check for "Diamond" here!
+	//TODO: Why is he so fast??
 	//Diamond Count Upadte
-	if (body->getIsTriggerd() && body->getTriggerInformation().triggerElementCollision == "Diamond")
+	if (body->getIsTriggerd() && utils::isWordInLine("Diamond", body->getTriggerInformation().triggerElementCollision))
 		++diamondsCount;
 
 	//setting...
